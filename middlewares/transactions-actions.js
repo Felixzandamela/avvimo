@@ -260,7 +260,6 @@ module.exports.getTransaction = async function( mode, type, _id){
   datas = await transformDatas(datas._doc,true);
   const isPaymentInstantly = datas.gateway.paymentInstantly ? true : false;
   const isIatured = isDeposit && datas.status === "EmProgresso" && datas.expireAt.secondsLength >= 0;
-  
   const newTransactionDatas ={
     isAdmin: isAdmin,
     shows: msgsStatus(datas.status,type),
@@ -290,6 +289,22 @@ module.exports.getTransaction = async function( mode, type, _id){
     btns: showBtns ? btnsArray : null ,
     datas: transaction
   }
+};
+
+module.exports.tooManyDeposits  = async function(_id){
+  const deposits = await Actions.get("deposits",{owner: _id});
+  const confirmedDeposits = [];
+  const notConfirmedDeposits = [];
+  if(deposits){
+    for(let j in deposits){
+      if(/^(EmProgresso|Concluido)$/i.test(deposits[j].status)){
+        confirmedDeposits.push(deposits[j]);
+      }else{
+        notConfirmedDeposits.push(deposits[j]);
+      }
+    }
+  }
+  return notConfirmedDeposits.length > 3 && confirmedDeposits.length <= 0;
 };
 
 

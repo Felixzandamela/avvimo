@@ -8,7 +8,7 @@ const {quote} = require('../middlewares/quotes');
 const { transformDatas, objRevised } = require('../middlewares/utils');
 const {authentication} = require("../middlewares/authentication");
 const {getFleets} = require("../middlewares/getFleets");
-
+const {getReviews} = require("../middlewares/getReviews");
 router.get('/', async(req,res)=>{
   const datas = await getFleets("cabinet");
   res.render("mains/home",{fleets:datas});
@@ -28,6 +28,7 @@ router.get("/reviews", async (req,res)=>{
   const link = {path:`/reviews`,queryString: req.query ? `${new URLSearchParams(req.query).toString()}` : ''};
   const body = await transformDatas(req.query);
   const results = await getReviews("public", body, link);
+  
   res.render("mains/reviews", {datas:results});
 });
 router.get("/new-review", authentication, async (req, res)=>{
@@ -78,12 +79,37 @@ router.get('/ref', urlencodedParser, async (req, res)=>{
     res.redirect(302, link);
   }
 });
-router.get("/support", (req,res)=>{
-  res.redirect("cabinet/chat");
+
+router.get("/me", urlencodedParser, async (req, res) => {
+  const { _id } = req.query;
+  if (!_id) {
+    return res.status(400).json({ error: 'ID é obrigatório' });
+  }
+  try {
+    const results = await Actions.get("users", _id);
+    if (!results) {
+      return res.status(404).json({ error: 'Usuário não encontrado' });
+    }
+    const datas = {
+      name: results.name,
+      src: results.src,
+      isAdmin: results.isAdmin
+    }
+    res.status(200).json(datas);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Erro ao buscar usuário' });
+  }
+});
+
+router.get("/contact-us", (req,res)=>{
+  const user = req.user;
+  const url = concatURl("support", `/?id=${user._id}&redirectedFrom=${req.headers.host}`);
+  res.render("cabinet/chat", {id:user._id,mode:"cabinet"});
 });
 
 router.use((req, res) => {
   res.status(404).render('mains/404-page');
 })
-//router.use(auth)
+
 module.exports = router;

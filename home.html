@@ -34,7 +34,92 @@
         </div>
       </div>
     </header>
+<div class="padd15-a" >
+ <div class="a_container br6-a">
+   <div class="wrap_header flex_b_c padd15-a">
+      <h3>Frotas</h3>
+   </div>
+       <div class="prog_wrapper">
+                <div class="flex_b_c prog_card padd10-a">
+                <div class="prog_names">
+                  <h4>{item.name}</h4>
+                  <div class="flex_s_c m5-t">
+                    <div class="flex_s_c">
+                      <p class="prog_amount"><b>1</b> deposíto(s)</p>
+                    </div>
+                     <div class="flex_s_c m5-l">
+                      <p class="prog_amount"><b>200mt</b> valor total</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="prog_container">
+                  <div  style="background: conic-gradient(var(--main-color) 40deg, RGBA(60, 173, 241,0.20) 40deg ,RGBA(60, 173, 241,0.20) 40deg)" class="prog_circle">
+                    <div class="prog_values">(2)}%</div>
+                  </div>
+                </div>
+              </div>
+              
+            </div>
    
+ </div> 
+</div>   
+   <style>
+  
+.prog_wrapper .prog_card:last-child{
+  border:none !important;
+}
+.prog_card{
+  width:100% ;
+  padding: 10px 15px;
+}
+
+.prog_amount{
+  font-size: 0.75rem;
+  color: var(--s-color);
+}
+   
+.prog-container {
+  position: relative;
+  display: -ms-grid;       
+  display: grid;
+  color: currentColor;
+  place-items: center;
+  border-radius: 10px;
+ }
+       
+.prog_circle{
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: 56px;
+  width: 56px;
+  border-radius: 60%;
+  }     
+  .prog_circle:before {
+   content: "";
+    position: absolute;
+    height: 80%;
+    width: 80%;
+    color: currentColor;
+    background: #fff;
+    border-radius: 50%;
+ }
+ .dark .prog_circle:before{
+   background: #293042;
+ }
+.prog_values {
+  position: relative;
+  font-weight:500;
+  font-size:0.7rem;
+}
+
+.prog_names h5{
+  font-size: 0.9rem;
+}
+
+
+   </style>       
+        
    <div class="padd10-a">
       <div  class="flex_wrap padd5-a">
               {{#each datas.datas}}

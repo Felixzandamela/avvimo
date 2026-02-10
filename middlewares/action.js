@@ -156,7 +156,7 @@ module.exports.Actions = (function () {
     },
 
     // delete single item with cascades (tries to do deletes server-side, not by filtering in memory)
-    delete: async function (id, datas) {
+    delete: async function (id, datas, callback) {
       if (!id || !datas || !datas.collection || !validCollection(datas.collection)) {
         return this.return('error', 'delete', datas || {});
       }
@@ -209,13 +209,38 @@ module.exports.Actions = (function () {
           }
         }
 
-        // If deleting a user, remove reviews authored by user
+        // If deleting a user, remove reviews authored by user, commissions ad withdrawals
         if (datas.collection === 'users') {
           const reviewsToDelete = await Reviews.find({ owner: item._id }).select('_id').lean().exec();
           const reviewIds = reviewsToDelete.map(r => r._id);
           if (reviewIds.length > 0) {
             itemsToDelete.push(reviewIds);
             itemsCollections.push('reviews');
+          }
+          
+          const commissionsToDelete = await Commissions.find({ owner: item._id}).select('_id').lean().exec();
+          const commissionIds = commissionsToDelete.map(c => c._id);
+          if (commissionIds.length > 0) {
+            let position;
+            for(let j = 0; j < itemsCollections.length; j++){
+              if(itemsCollections[j] === "commissions"){
+                position = j;
+                break;
+              }
+            }
+            if(position){
+              itemsToDelete[position].push(commissionIds);
+            }else{
+              itemsToDelete.push(commissionIds);
+              itemsCollections.push('commissions');
+            }
+          }
+        
+          const withdrawalsToDelete = await Withdrawals.find({ owner: item._id }).select('_id').lean().exec();
+          const withdrawalIds = withdrawalsToDelete.map(w => w._id);
+          if (withdrawalIds.length > 0) {
+            itemsToDelete.push(withdrawalIds);
+            itemsCollections.push('withdrawals');
           }
         }
 
@@ -231,10 +256,10 @@ module.exports.Actions = (function () {
           await this.deleteMany(col, ids);
         }
 
-        return this.return('success', 'delete', datas);
+        return callback? true : this.return('success', 'delete', datas);
       } catch (error) {
         console.error('delete error:', error);
-        return this.return('error', 'delete', datas);
+        return callback ? false : this.return('error', 'delete', datas);
       }
     },
 

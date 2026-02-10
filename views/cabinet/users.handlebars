@@ -74,15 +74,41 @@
                   <div class="a_col_150">{{balance.numberSeparotor.b}} MZN</div>
                   <div class="a_col status"><p class="a_status {{#if isAdmin}}reactive {{/if}}"> {{#if isAdmin}} Sim {{else}} Não{{/if}} </p></div>
                   <div class="a_col_actions">
-                    <a class="a" href="/admin/users/edit-profile?_id={{_id}}">
-                    <div class="flex_c_c btn_circle">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+                    <div class="btn_circle flex_c_c br60">
+                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
                         <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
                       </svg>
+                      <div class="a_c_menu a_container_br">
+                      <a class="a" href="/admin/users/edit-profile?_id={{_id}}">
+                        <div class="padd6-10 flex_s_c"><i class="bi bi-pen m5-r"></i>Editar</div>
+                      </a>
+                      <div class="padd6-10 danger flex_s_c alertEvent"><i class="bi bi-trash m5-r"></i>Deletar</div>
+                      </div>
                     </div>
-                    </a>
                   </div>
                 </div>
+                  <form action="/admin/users/delete/{{_id}}" method="get" class="a_alert alertBox flex_c_c">
+                    <div class="a_alert_container a_container br6-a padd10-a">
+                      <div class="a_alert_header padd10-lr padd10-b">
+                        <h3>Deletar {{name}}?</h3>
+                      </div>
+                      <div class="padd10-a">
+                        <p></p>
+                        <div class="a_alert_warning flex_s br4-a padd10-a">
+                          <i class="bi bi-exclamation-square"></i>
+                          <p>Ao deletar este usuarío deletará tambem deposítos, saques e comicões existente neste usuarío.</p>
+                        </div>
+                       </div>
+                        <div class="a_alert_btns m5-a flex_e_c">
+                          <div class="m5-a">
+                            <button type="button" class="transparent-btn canselAlert br4-a">Canselar</button>
+                          </div>
+                          <div class="m5-a ">
+                            <button class="danger-btn br4-a">Deletar</button>
+                          </div>
+                        </div> 
+                      </div>
+                    </form>
                 {{/each}}
                 {{else}}
                   {{>_empty_card}}

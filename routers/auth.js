@@ -231,6 +231,7 @@ auth.post("/account_action", urlencodedParser, async(req,res)=>{
 });
 
 
+/*
 
 auth.post('/login', urlencodedParser, (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
@@ -247,15 +248,16 @@ auth.post('/login', urlencodedParser, (req, res, next) => {
     });
   })(req, res, next);
 });
-/*
+*/
+
 auth.post('/login', urlencodedParser, (req, res, next)=>{
   passport.authenticate("local", {
-    successRedirect:  `${req.protocol}://cabinet.${_host}/dashboard`,
-    failureRedirect: "/login",
+    successRedirect: "/cabinet/dashboard",
+    failureRedirect: "/auth/login",
     failureFlash: true
    })(req, res, next)
-})
-*/
+});
+
 auth.get('/logout', function(req, res, next){
   req.logout(function(err) {
     if (err) { return next(err); }

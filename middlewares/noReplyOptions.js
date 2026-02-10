@@ -46,7 +46,8 @@ module.exports.noReplyOptions = async function(user, type){
       location:"1120 Facim, Marracuene Maputo, Moçambique",
       link: datas[type].path,
       year: getTime().onlyYear,
-      baseLink: `${protocol}${baseUrl}`
+      baseLink: `${protocol}${baseUrl}`,
+      supportUrl: `${protocol}${baseUrl}/contact-us?id=${user._id}`
     }
   }    
 }

@@ -2,12 +2,14 @@ const express = require("express");
 const admin = express.Router();
 const bodyParser = require('body-parser');
 const urlencodedParser = bodyParser.urlencoded({limit: '50mb', extended: true });
-const {asideLinks,getTime,transformDatas,sortByDays, objRevised, statusIcons, propertysLength,msgsStatus, formatDate} = require('../middlewares/utils');
+const {asideLinks,getTime,transformDatas,sortByDays, objRevised, statusIcons, propertysLength,msgsStatus, formatDate,cardDatas} = require('../middlewares/utils');
 const {pagination} = require('../middlewares/pagination');
 const {Actions} = require('../middlewares/action');
 const {getFleets} = require("../middlewares/getFleets");
 const {getReviews} = require("../middlewares/getReviews");
 const {DepositsActions,CommissionsActions,WithdrawalsActions,getTransactions,getTransaction} = require("../middlewares/transactions-actions");
+const {performance} = require("../middlewares/performances");
+
 const alertDatas = {
   type:"error",
   title:"Erro!",
@@ -25,12 +27,15 @@ const transTypes = {
 admin.get('/', (req, res) => {
   res.redirect("/admin/dashboard");
 });
-admin.get('/dashboard', (req, res) => {
-  res.status(200).render("cabinet/ad-dashboard");
+admin.get('/dashboard', async (req, res) => {
+  const arryFields = ["deposits", "withdrawals", "commissions", "payouts", "users"];
+  const renderCards = await performance(arryFields);
+  res.status(200).render("cabinet/ad-dashboard", renderCards);
 });
 
 admin.get('/fleets', urlencodedParser, async (req, res) => {
     const datas = await getFleets("admin");
+    console.log(datas)
     res.status(200).render("cabinet/fleets",{admin:true, fleets:datas});
 });
 
@@ -130,7 +135,19 @@ admin.get("/users", urlencodedParser, async(req,res)=>{
     res.render("cabinet/users", {datas:null});
   }
 });
-
+admin.get("/users/delete/:_id", urlencodedParser, async (req,res)=>{
+  const {_id} = req.params;
+  const datas = {
+    type: "delete",
+    redirect:`/admin/users`,
+    collection:"users",
+  }
+  const results = await Actions.delete(_id, datas);
+  if(results){
+    req.flash(results.type, results.text);
+    res.status(200).redirect(results.redirect);
+  }
+});
 admin.get("/users/edit-profile", urlencodedParser, async(req,res)=>{
   const {_id} = req.query;
   const item = await Actions.get("users",_id);
@@ -228,5 +245,30 @@ admin.post("/transaction/:type/action", urlencodedParser, async(req,res)=>{
   }
 });
 
+admin.get("/support", (req,res)=>{
+  const user = req.user;
+  //const url = concatURl("support", `/?id=${user._id}&redirectedFrom=${req.headers.host}`);
+ res.render("cabinet/chat", {id:user._id, mode:"admin"});
+});
 
+
+const cron = require('node-cron');
+
+cron.schedule('* * * * *', async () => {
+  const usersTodelete = await Actions.get("users",{inDeleteQueue:true});
+  if(usersTodelete){
+    for(let b in usersTodelete){
+      if(formatDate(usersTodelete[b].cronTodelete).secondsLength > 1){
+        const datas = {
+          type: "delete",
+          redirect:`/admin/users`,
+          collection:"users",
+        }
+        const results = await Actions.delete(_id, datas, true);
+        if(results) continue;
+      }
+    }
+  }
+  console.log('running a task every minute');
+});
 module.exports = admin;

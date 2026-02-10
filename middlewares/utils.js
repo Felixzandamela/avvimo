@@ -1,6 +1,4 @@
-
 const express = require("express");
-
 const bcrypt = require("bcryptjs");
 function joinZero(number){return(number < 10 ? "0" + number : number).toString();}
 
@@ -55,12 +53,27 @@ const collections = {
     title:["Ganho","Ganhos"],
     icon:  "bi bi-currency-dollar",
     color: "var(--main-color-rgba)"
+  },
+  payouts:{
+    title:["Pagamento","Pagamentos"],
+    icon:  "bi bi-currency-dollar",
+    color: "var(--main-color-rgba)"
   }
 } 
 module.exports.coll = function(c){
   return !collections[c]? c : collections[c];
 }
+function concatURl(subdomin, query){
+  const baseUrl = process.env.HOST;
+  const protocol = process.env.PROTOCAL;
 
+  let url = subdomin ? `${protocol}${subdomin}.${baseUrl}` : `${protocol}${baseUrl}`;
+  let fullUrl = query? `${url}${query}` : url;
+  return fullUrl;
+}
+module.exports.concatURl = function(subdomin,query){
+  return concatURl(subdomin,query);
+}
 function _defineProperty (obj,target={}){
   for(key in obj){
     Object.defineProperty(target,key,{
@@ -291,7 +304,7 @@ module.exports.asideLinks = function(mode){
       icon: "bi bi-grid"
     },{
       title: "Suporte",
-      link: `/support`,
+      link: `/${mode}/support`,
       icon: "bi bi-headset"
     },{
       title: "Depósitos",
@@ -394,7 +407,7 @@ const getYearlyChartdatas = (datas,language, type)=>{
         if(day === MonthAndYear){
           totalInThisMonth++
         }
-      }else if(type === "earnings"){
+      }else if(/^(earnings|payouts)$/i.test(type)){
         if(/^(Concluido)$/i.test(datas[d].status) && day === MonthAndYear){
           totalInThisMonth +=  datas[d].income.default;
         }
@@ -431,12 +444,7 @@ class CardBalance{
     this.datas = datas;
     this.getTotals = async function(){
       let total = 0, totalThisWeek = 0, totalThisMonth = 0, percentageDetails, last12Months, isUsers = field === "users";
-      const fieldsIcon ={
-        deposits: "bi bi-currency-dollar",
-        withdrawals:"bi bi-currency-dollar",
-        commissions:"bi bi-link-45deg",
-        users: "bi bi-people"
-      }
+      
       language = language ? language : "pt-PT";
       let weekDays = ThisWeek(language);
       for(let i in datas){
@@ -472,12 +480,13 @@ class CardBalance{
         color: collections[this.field].color,
         field: { default:this.field, external:collections[this.field].title[1]},
         total: totals.total,
+        currency: this.field = "users"? false : true,
         percentageDetails,
         last12Months
       }
     },
     this.getGarnings = async function(){
-      const fieldsIcon ={earnings: "bi bi-currency-dollar"};
+      const fieldIcon = collections[this.field];
       let total = 0, totalThisWeek = 0, totalThisMonth = 0, percentageDetails, lastMonths = datas[1].last12Months;
       let weekDays = ThisWeek(language);
       let last12Months = {
@@ -515,17 +524,17 @@ class CardBalance{
           }
         }
       }
-      const icon = fieldsIcon["earnings"];
-      percentageDetails = new Percentage(totalThisWeek, totalThisMonth, total, icon, "earnings");
-      last12Months.status = compareMonthsDatas(last12Months.datas,"earnings");
-      last12Months.color = collections["earnings"].color;
+      percentageDetails = new Percentage(totalThisWeek, totalThisMonth, total, fieldIcon, this.field);
+      last12Months.status = compareMonthsDatas(last12Months.datas,this.field);
+      last12Months.color = collections[this.field].color;
       const datasItems = [...datas[0].datas,...datas[1].datas];
       const totals = await transformDatas({total:total},true);
       return {
         datas:datasItems,
-        color:collections["earnings"].color,
-        field:{default:"earnings",external:collections["earnings"].title[1]},
+        color:collections[this.field].color,
+        field:{default:this.field,external:collections[this.field].title[1]},
         total:totals.total,
+        currency:true,
         percentageDetails,
         last12Months
       }

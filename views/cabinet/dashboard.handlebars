@@ -101,21 +101,21 @@
             <div class="a_box_icon m5-r flex_c_c br60"><i class="bi bi-currency-dollar"></i></div>
             <div class="left m5-l">
               <div class="flex_b">
-                <h3 class="title">Ganhos</h3>
+                <h3 class="title">{{chart.field.external}}</h3>
                 <div class="percentage">
-                  <div class="br4-a {{earns.percentageDetails.arrow}} flex_s_c"><i class="bi bi-graph-{{earns.percentageDetails.arrow}}-arrow m5-r"></i>{{earns.percentageDetails.percentage}}%</div>
+                  <div class="br4-a {{chart.percentageDetails.arrow}} flex_s_c"><i class="bi bi-graph-{{chart.percentageDetails.arrow}}-arrow m5-r"></i>{{chart.percentageDetails.percentage}}%</div>
                 </div>
               </div>
               <div class="flex_b">
-              <div class="amount">{{earns.total.numberUnits}} MZN</div>
-                 <p class="">{{#if earns.percentageDetails.period}}Esta semana{{else}}Este mês{{/if}}</p>
+              <div class="amount">{{chart.total.numberUnits}} MZN</div>
+                 <p class="">{{#if chart.percentageDetails.period}}Esta semana{{else}}Este mês{{/if}}</p>
               </div>
             </div>
           </div>
         
         <div  class="chart_wrap padd10-a">
            <div id="earns_tool" class="chart_tool m5-a"></div>
-          <div title="{{user.name}}" accesskey='{{earns.last12Months}}' class="chart"></div>
+          <div title="{{user.name}}" accesskey='{{chart.last12Months}}' class="chart"></div>
         </div>
       </div>
     </div>

@@ -4,11 +4,12 @@ const {sendEmail} = require('../middlewares/sendEmail');
 const cabinet = express.Router();
 const bodyParser = require('body-parser');
 const urlencodedParser = bodyParser.urlencoded({ limit: '50mb',extended: true });
-const {transformDatas,getTime,objRevised,propertysLength,statusIcons,msgsStatus,formatDate,sortByDays,expireDay,cardDatas} = require('../middlewares/utils');
-const {getTransactions,getTransaction,getAccounts} = require("../middlewares/transactions-actions");
+const {transformDatas,getTime,objRevised,propertysLength,statusIcons,msgsStatus,formatDate,sortByDays,expireDay,cardDatas,concatURl} = require('../middlewares/utils');
+const {getTransactions,getTransaction,getAccounts, tooManyDeposits} = require("../middlewares/transactions-actions");
 const {pagination} = require('../middlewares/pagination');
 const {Actions} = require('../middlewares/action');
 const {getFleets} = require("../middlewares/getFleets");
+const {performance} = require("../middlewares/performances");
 
 const alertDatas = {
   type:"error",
@@ -24,46 +25,17 @@ cabinet.get("/", (req,res)=>{
   res.redirect(301, "/cabinet/dashboard");
   //res.redirect("/transactions/deposits/view?id=");
 });
+
+cabinet.get("/support", (req,res)=>{
+  const user = req.user;
+  const url = concatURl("support", `/?id=${user._id}&redirectedFrom=${req.headers.host}`);
+ // res.redirect(302, url);
+ res.render("cabinet/chat", {id:user._id})
+});
+
 cabinet.get('/dashboard', async (req, res) => {
-  
-  const transactionsMap = {
-    deposits: await Actions.get("deposits",{owner: req.user._id}),
-    withdrawals: await Actions.get("withdrawals",{owner: req.user._id}),
-    commissions: await Actions.get("commissions",{owner: req.user._id})
-  }
-  
-  
-  const performance = async function(){
-    let datasCard = [];
-    let earnCard = null;
-    const arryFields = ["deposits","withdrawals","commissions","earnings"];
-    for(let z in arryFields){
-      if(/^(deposits|withdrawals|commissions)$/i.test(arryFields[z])){
-        const data = transactionsMap[arryFields[z]] ? transactionsMap[arryFields[z]] : [];
-        const f = await cardDatas(data,arryFields[z], "pt-PT");
-        const k = await f.getTotals();
-        datasCard.push(k);
-      }
-      if("earnings" === arryFields[z]){
-        let dataEarn = datasCard.filter((item)=>{
-          if(/^(deposits|commissions)$/i.test(item.field.default)) return true;
-        });
-        let f = await cardDatas(dataEarn);
-        const j = await f.getGarnings();
-        j.last12Months = JSON.stringify(j.last12Months);
-        earnCard = j;
-      }
-    }
-    for(let y in datasCard){datasCard[y].last12Months = JSON.stringify(datasCard[y].last12Months);}
-    return {
-      cards: datasCard,
-      earns: earnCard
-    }
-  }
-  const renderCards = await performance();
-  //console.log(renderCards)
-  
-  //const renderCards = null
+  const arryFields = ["deposits", "withdrawals", "commissions", "earnings"];
+  const renderCards = await performance(arryFields, req.user._id);
   res.status(200).render("cabinet/dashboard",renderCards);
 });
 
@@ -110,7 +82,7 @@ cabinet.post("/deposit", urlencodedParser, async (req,res)=>{
       this.amount= Math.round(from.amount * (5 / 100));
       this.totalReceivable = this.amount;
       this.fees = 0;
-      this.status = "Pending";
+      this.status = "Pendente";
       this.from = from._id;
       this.commissionedBy = from.owner;
       this.gateway = cashback._id;
@@ -118,44 +90,50 @@ cabinet.post("/deposit", urlencodedParser, async (req,res)=>{
       this.date = getTime().fullDate;
     }
   }
-  if(fleet && cashback){
-    const deposit = new Deposit(bodys,fleet);
-    const datas = {
-      type:"set",
-      redirect:`/cabinet/fleets`,
-      collection:"deposits",
-      data: deposit
-    }
-    try{
-      const newDeposit = await Actions.set(datas, null, true);
-      if(newDeposit){
-        datas.redirect = `/cabinet/transactions/deposits/view?_id=${newDeposit._id}`;
-        if(req.user.upline){
-          const [upline] = await Actions.get("users",req.user.upline);
-          if(upline){
-            const commission =  new Commission(req.user.upline, newDeposit, cashback);
-            datas.collection = "commissions";
-            datas.data = commission;
-            const results = await Actions.set(datas);
-            res.redirect(datas.redirect);
-          }else{
-            res.redirect(datas.redirect);
-          }
+  
+  // if Pendente deposits queue > 3 and deposits confirmed <= 0 return
+  const isTooManyDepositsNotConfirmed = await tooManyDeposits(req.user._id);
+  if(isTooManyDepositsNotConfirmed){
+    req.flash("error","Você tem muitos depósitos pendentes, por favor confirma um dos seus depósitos!");
+    res.redirect("/cabinet/transactions/deposits");
+  }else{
+    if(fleet && cashback){
+      const deposit = new Deposit(bodys,fleet);
+      const datas = {
+        type:"set",
+        redirect:`/cabinet/fleets`,
+        collection:"deposits",
+        data: deposit
+      }
+      try{
+        const newDeposit = await Actions.set(datas, null, true);
+        if(newDeposit){
+          datas.redirect = `/cabinet/transactions/deposits/view?_id=${newDeposit._id}`;
+          if(req.user.upline){
+            const [upline] = await Actions.get("users",req.user.upline);
+            if(upline){
+              const commission =  new Commission(req.user.upline, newDeposit, cashback);
+              datas.collection = "commissions";
+              datas.data = commission;
+              const results = await Actions.set(datas);
+              res.redirect(datas.redirect);
+            }else{
+              res.redirect(datas.redirect);
+            }
+          }else{res.redirect(datas.redirect);}
         }else{
+          req.flash("error", "Houve um erro ao processar deposíto");
           res.redirect(datas.redirect);
         }
-      }else{
-        req.flash("error", "Houve um erro ao processar deposíto");
+      }catch(error){
+        console.error(error);
+        req.flash("error", "Houve um erro internal ao processar deposíto");
         res.redirect(datas.redirect);
       }
-    }catch(error){
-      console.error(error);
-      req.flash("error", "Houve um erro internal ao processar deposíto");
-      res.redirect(datas.redirect);
+    }else{
+      req.flash("error", "Houve um erro ao buscar frota");
+      res.redirect("/cabinet/fleets");
     }
-  }else{
-    req.flash("error", "Houve um erro ao buscar frota");
-    res.redirect("/cabinet/fleets");
   }
 });
 
@@ -261,7 +239,10 @@ cabinet.post("/account_action", urlencodedParser, async(req,res)=>{
     type:"update",
     redirect: `/cabinet/dashboard`,
     collection: "users",
-    data:{cronTodelete: type? expireDay(30) : []}
+    data:{
+      cronTodelete: type? expireDay(1) : [],
+      inDeleteQueue: type ? true : false
+    }
   }
   const account = await Actions.get("users",_id);
   if(account){

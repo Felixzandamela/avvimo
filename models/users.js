@@ -20,7 +20,7 @@ const Users = new Schema({
   src:{
     type:String,
     required: false,
-    default:"/imgs/avatar.png"
+    default:""
   },
   phoneNumber:{
     type:Number,
@@ -82,6 +82,11 @@ const Users = new Schema({
     type: Array,
     require:false,
     default:[]
+  },
+  inDeleteQueue:{
+    type:Boolean,
+    require:false,
+    default:false
   }
 });
 mongoose.model("users", Users);

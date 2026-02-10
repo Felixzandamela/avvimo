@@ -30,7 +30,7 @@
     {{#if datas}}
    <div class="padd10-a">
       <div  class="flex_wrap padd5-a">
-              {{#each datas}}
+              {{#each datas.datas}}
               <div class="flex_s padd10-a a_catalgo a_container br6-a">
                 <div class="a_catalgo_img">
                   <img src="{{owner.src}}" class="br60"/>
@@ -50,6 +50,7 @@
             </div>
            
    </div>
+     {{>_pagination}}
     {{else}}
       {{>_empty_card}}
     {{/if}}

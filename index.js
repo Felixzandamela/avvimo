@@ -20,6 +20,7 @@ const os = require('os');
 const vhost = require('vhost');
 const app = express();
 require('dotenv').config();
+
 const cabinet = require('./routers/cabinet');
 const auth = require('./routers/auth');
 const index = require('./routers/index');
@@ -95,12 +96,59 @@ app.use(async(req, res, next)=>{
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
   res.locals.baseUrl = `${req.protocol}://${_host}`;
+  res.locals.supportUrl = `${req.protocol}://${_host}`;
   res.locals.company = company;
   res.locals.gateways = await Actions.get("gateways", {status: true});
   res.locals.user = req.user? await transformDatas(_defineProperty(req.user._doc),true) : null;
   res.locals.storage = storage.getItem("dbStorage");
   next();
 });
+
+
+const body = {
+  _id:"6947f2f526d71b0f52f58de4",
+  page:0,
+  
+}
+const {DepositsActions,getTransactions} = require("./middlewares/transactions-actions");
+
+async function gj (){
+  
+  const h = await Actions.get("users")
+ console.log(h)
+ 
+}
+
+//gj()
+
+
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  next();
+});
+
+
+/*
+
+app.use(helmet());
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'","blob:", "'unsafe-eval'", "'unsafe-inline'", "https://unpkg.com","https://cdnjs.cloudflare.com","https://*.gstatic.com","https://*.firebaseapp.com","https://*.firebaseio.com", "https://*.google.com"],
+      styleSrc: ["'self'", "'unsafe-inline'","https://cdn.jsdelivr.net","https://googleapis.com","https://unpkg.com", "https://cdnjs.cloudflare.com"],
+      fontSrc: ["'self'", "https://cdn.jsdelivr.net","https://googleapis.com","https://cdnjs.cloudflare.com"],
+      imgSrc: ["'self'","data:", "'unsafe-inline'", "'https://example.com'"],
+      connectSrc: ["'self'", "https://www.gstatic.com","https://firebaseapp.com","https://firebaseio.com","https://apis.google.com"],
+      frameSrc: ["'self'", "https://www.gstatic.com","https://firebaseapp.com","https://firebaseio.com"],
+      objectSrc: ["'self'", "https://www.gstatic.com","https://firebaseapp.com","https://firebaseio.com", "https://apis.google.com"],
+    },
+  })
+);
+
+*/
 
 app.use('/admin', (req, res, next) => {
   const isAdmin = true;
@@ -119,57 +167,14 @@ app.use('/cabinet', authentication, (req, res, next) => {
   next();
 });
 
-const body = {
-  _id:"6947f2f526d71b0f52f58de4",
-  page:0,
-  
-}
-const {DepositsActions,getTransactions} = require("./middlewares/transactions-actions");
-
-async function gj (){
-  const body = {
-    page:0,
-      date: "",
-      owner: "",
-      status: "",
-      _id: ""
-    }
-  const h = await getTransactions("admin",body, "withdrawals")
- console.log(h.datas.datas)
- 
- console.log(await getFleets())
-}
-
-//gj()
-
-
-app.use(helmet());
-app.use(
-  helmet.contentSecurityPolicy({
-    directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "blob:", "'unsafe-inline'", "https://unpkg.com","https://cdnjs.cloudflare.com","https://code.highcharts.com"],
-      styleSrc: ["'self'", "'unsafe-inline'","https://cdn.jsdelivr.net","https://googleapis.com","https://unpkg.com", "https://cdnjs.cloudflare.com"],
-      fontSrc: ["'self'", "https://cdn.jsdelivr.net","https://googleapis.com","https://cdnjs.cloudflare.com"],
-      imgSrc: ["'self'","data:", "'unsafe-inline'", "'https://example.com'"],
-      connectSrc: ["'self'", "https://code.highcharts.com"],
-      frameSrc: ["'self'", "https://code.highcharts.com"],
-      objectSrc: ["'self'", "https://code.highcharts.com"]                
-    },
-  })
-);
-
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "https://example.com");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  next();
-});
-
 app.use("/cabinet", cabinet);
 app.use("/admin", admin);
 app.use("/auth",auth); /*vhost("auth.localhost",*/ 
 app.use(index);
+app.post('/csp-violation', (req, res) => {
+  console.log(req.body);
+  res.status(204).send('');
+});
 /*
 const options = { 
   key: fs.readFileSync("server.key"), 
