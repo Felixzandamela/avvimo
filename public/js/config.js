@@ -1,5 +1,5 @@
 SystemJS.config({
-  baseURL:'http://localhost:8089/umd/',
+  baseURL:'/umd/',
   defaultExtension:false,
   packages:{
     ".":{
