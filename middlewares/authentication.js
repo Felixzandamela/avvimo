@@ -36,9 +36,7 @@ module.exports = {
         owner: req.user
       }
       const send = await sendEmail(t, "unauthorizedNavigator");
-      if(send){
-        res.redirect("/error");
-      }
+      res.redirect("/error");
     }else{return next();}
   }
 }
