@@ -78,9 +78,10 @@ app.use(session({
   secret: "bolecadas",
   resave: true,
   saveUninitialized: true,
+  rolling: true,
   cookie: {
-    secure: false,  // só https
-    maxAge: 1000 * 60 * 60 * 24 * 7
+    secure: true, // só https
+    maxAge: 1000 * 60 * 60 * 24 // 24 horas
   }
 }));
 
