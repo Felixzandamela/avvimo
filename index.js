@@ -94,6 +94,7 @@ app.use(flash());
 
 //middlewares
 app.use(async(req, res, next)=>{
+  console.log(req.protocol);
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
   res.locals.baseUrl = `${req.protocol}://${_host}`;
