@@ -166,17 +166,17 @@ const options = {
 }; 
 
 const port = process.env.Port || 8089;
+/*
 https.createServer(options, app).listen(port, () => {
   const ip = getIPAddress();
   console.log(`listening at ${ip}`);
 });
+*/
 
-/*
 app.listen(port, () => {
-  https.createServer(options, app);
   const ip = getIPAddress();
   console.log(`listening at ${ip}`);
-});*/
+});
 
 
 function getIPAddress() {
