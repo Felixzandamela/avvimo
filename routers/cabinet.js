@@ -213,6 +213,7 @@ cabinet.get("/transactions/:type/view",  urlencodedParser, async (req,res)=>{
 
 cabinet.get("/edit-profile", (req, res)=>{
   const {redirectTo} = req.query;
+  console.log(redirectTo)
   res.render("cabinet/edit-profile",{redirectTo:redirectTo});
 });
 
