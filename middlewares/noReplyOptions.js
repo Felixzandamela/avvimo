@@ -4,8 +4,7 @@ const baseUrl = process.env.HOST;
 const protocol = process.env.PROTOCAL;
 // no-reply emails options
 module.exports.noReplyOptions = async function(user, type){
-  //const settings = await Administration.find().exec();
-  const companyName = "Avvimo" //settings[0].companyname;
+  const companyName = process.env.COMPANY;
   const datas = {
     verifyaccount:{
       path: `${protocol}${baseUrl}/auth/account-verification?id=${user._id}`,
