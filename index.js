@@ -107,23 +107,6 @@ app.use(async(req, res, next)=>{
 });
 
 
-const body = {
-  _id:"6947f2f526d71b0f52f58de4",
-  page:0,
-  
-}
-const {DepositsActions,getTransactions} = require("./middlewares/transactions-actions");
-
-async function gj (){
-  
-  const h = await Actions.get("users")
- console.log(h)
- 
-}
-
-//gj()
-
-
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
