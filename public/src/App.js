@@ -79,7 +79,8 @@ const Main = ({props, onChanges}) =>{
   const handleScrollTo =()=>{window.scrollTo(0,0)}
   
   async function getUser(_id) {
-    let url = `http://localhost:8089/me?_id=${_id}`;
+    const baseUrl = document.getElementById("baseUrl");
+    let url = `${baseUrl}/me?_id=${_id}`;
     try {
       let response = await fetch(url);
       if (!response.ok) {
