@@ -6,13 +6,13 @@
     "Investimentos",
     "Parcerias"
   ],
-  "homepage": "https://github.com/Felixzandamela/Avvimo.git#readme",
+  "homepage": "https://github.com/Felixzandamela/avvimo.git#readme",
   "bugs": {
-    "url": "https://github.com/Felixzandamela/Avvimo.git/issues"
+    "url": "https://github.com/Felixzandamela/avvimo.git/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Felixzandamela/Avvimo.git"
+    "url": "git+https://github.com/Felixzandamela/avvimo.git"
   },
   "license": "ISC",
   "author": "Felix Julião Zandamela",
