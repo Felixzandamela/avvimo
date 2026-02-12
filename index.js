@@ -159,15 +159,15 @@ app.post('/csp-violation', (req, res) => {
   console.log(req.body);
   res.status(204).send('');
 });
-/*
+
 const options = { 
   key: fs.readFileSync("server.key"), 
   cert: fs.readFileSync("server.cert"), 
 }; 
-*/
+
 const port = process.env.Port || 8089;
 app.listen(port, () => {
-  //https.createServer(options, app);
+  https.createServer(options, app);
   const ip = getIPAddress();
   console.log(`listening at ${ip}`);
 });
