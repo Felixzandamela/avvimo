@@ -241,18 +241,17 @@ cabinet.post("/account_action", urlencodedParser, async(req,res)=>{
     redirect: `/cabinet/dashboard`,
     collection: "users",
     data:{
-      cronTodelete: type? expireDay(1) : [],
-      inDeleteQueue: type ? true : false
+      cronTodelete: type? expireDay(30) : [],
+      inDeleteQueue: type? true : false
     }
   }
   const account = await Actions.get("users",_id);
   if(account){
     const results = await Actions.update(_id,datas);
     const {type,text,redirect} = results;
-    if(results.type == "success"){
-      if(type){const send = await sendEmail(account, "requestdeleteaccount");}
+    if(results.type === "success" && datas.data.inDeleteQueue){
+      const send = await sendEmail(account, "requestdeleteaccount");
     }
-    req.flash(type, `${text}`);
     res.redirect(redirect);
   }else{
     req.flash("error", "Este usuarío não está disponível");
