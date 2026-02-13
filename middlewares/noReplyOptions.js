@@ -1,5 +1,5 @@
 const express = require("express");
-const {getTime} = require('./utils');
+const {getTime,formatDate} = require('./utils');
 const baseUrl = process.env.HOST;
 const protocol = process.env.PROTOCAL;
 // no-reply emails options
@@ -41,6 +41,8 @@ module.exports.noReplyOptions = async function(user, type){
       logo: `${protocol}${baseUrl}/imgs/logo1.png`,
       name: user.name,
       email: user.email,
+      guestEmail: user.guest? user.guest.email : "";
+      time: formatDate().fullDate,
       companyName: companyName,
       location:"1120 Facim, Marracuene Maputo, Moçambique",
       link: datas[type].path,
