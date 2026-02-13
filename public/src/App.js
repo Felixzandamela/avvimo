@@ -80,7 +80,6 @@ const Main = ({props, onChanges}) =>{
   
   async function getUser(_id) {
     const baseUrl = document.getElementById("baseUrl").value;
-    
     let url = `${baseUrl}/me?_id=${_id}`;
     try {
       let response = await fetch(url);
