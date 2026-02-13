@@ -41,7 +41,7 @@ module.exports.noReplyOptions = async function(user, type){
       logo: `${protocol}${baseUrl}/imgs/logo1.png`,
       name: user.name,
       email: user.email,
-      guestEmail: user.guest? user.guest.email : "";
+      guestEmail: user.guest? user.guest.email : "",
       time: formatDate().fullDate,
       companyName: companyName,
       location:"1120 Facim, Marracuene Maputo, Moçambique",
