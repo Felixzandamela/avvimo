@@ -33,7 +33,7 @@ module.exports = {
       const t = {
         email: CEO,
         name: process.env.COMPANY,
-        owner: req.user
+        guest: req.user
       }
       const send = await sendEmail(t, "unauthorizedNavigator");
       res.redirect("/error");
