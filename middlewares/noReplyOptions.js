@@ -28,7 +28,7 @@ module.exports.noReplyOptions = async function(user, type){
     },
     unauthorizedNavigator:{
       path: `${protocol}${baseUrl}/admin/alerts`,
-      subject: "Uma tentativa de entrar no admin!",
+      subject: "Uma tentativa de navegação na area de administração!",
       template: 'emails/unauthorizedNavigator'
     }
   }
