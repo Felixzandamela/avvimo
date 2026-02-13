@@ -134,16 +134,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 } catch (error) {};
-  try{
-    if(document.querySelectorAll(".concatLink")){
-      const updateProfiles = [...document.querySelectorAll(".updateProfile")];
-      for(let h in updateProfiles){
-        const c = updateProfiles[h].href;
-        alert(updateProfiles[h].href)
-        updateProfiles[h].href = `${c}?redirectTo=${updateProfiles[h].baseURL}`;
-      }
-    }
-  }catch(error){};
   
 const texts={
     Concluido:{
