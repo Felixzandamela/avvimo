@@ -80,18 +80,18 @@ const Main = ({props, onChanges}) =>{
   
   async function getUser(_id) {
     const baseUrl = document.getElementById("baseUrl").value;
-    alert(baseUrl)
+    
     let url = `${baseUrl}/me?_id=${_id}`;
     try {
       let response = await fetch(url);
       if (!response.ok) {
         throw new Error('Erro ao buscar usuário');
+      }else{
+        const userDatas = await response.json();
+        return userDatas;
       }
-      const userDatas = await response.json();
-      return userDatas;
     } catch (error) {
       console.error(error);
-      alert(error)
       return null;
     }
   }
