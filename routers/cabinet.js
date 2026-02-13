@@ -212,17 +212,15 @@ cabinet.get("/transactions/:type/view",  urlencodedParser, async (req,res)=>{
 
 
 cabinet.get("/edit-profile", (req, res)=>{
-  const {redirectTo} = req.query;
-  console.log(redirectTo)
-  res.render("cabinet/edit-profile",{redirectTo:redirectTo});
+  res.render("cabinet/edit-profile");
 });
 
 cabinet.post("/edit-profile", urlencodedParser, async(req,res)=>{
-  const {_id,redirectTo} = req.query;
+  const {_id} = req.query;
   const bodys = await transformDatas(req.body);
   const datas = {
     type:"update",
-    redirect:redirectTo,
+    redirect: "/cabinet/dashboard",
     collection:"users",
     data:bodys
   }
