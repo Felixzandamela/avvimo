@@ -139,7 +139,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const updateProfiles = [...document.querySelectorAll(".updateProfile")];
       for(let h in updateProfiles){
         const c = updateProfiles[h].href;
-        updateProfiles[h].href = `${c}?redirectTo=${updateProfiles[h].baseURI}`;
+        updateProfiles[h].href = `${c}?redirectTo=${updateProfiles[h].baseURL}`;
       }
     }
   }catch(error){};
