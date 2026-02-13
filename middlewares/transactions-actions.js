@@ -163,13 +163,15 @@ module.exports.WithdrawalsActions = async function (body, internal) {
     const updatedWithdrawal = await withdrawal.save();
     if (!updatedWithdrawal) return errorMsgs("errorAc", "saque", body.status);
     return true;
-  };
+  }
   if(body.status === "Anulado"){
     withdrawal.status = body.status;
     const updatedWithdrawal = await withdrawal.save();
     if (!updatedWithdrawal) return errorMsgs("errorAc", "saque", body.status);
-    const balanceUpdated = await Actions.increment("users", withdrawal.owner._id, ["balance"], withdrawal.amount);
+   /*
+   const balanceUpdated = await Actions.increment("users", withdrawal.owner._id, ["balance"], withdrawal.amount);
     if (!balanceUpdated) return "Erro ao atualizar saldo.";
+   */
     return true;
   };
   if(body.status === "Concluido"){
