@@ -26,7 +26,7 @@ const Withdrawals = new Schema({
     default:"Pendente"
   },
   account:{
-    type:Number,
+    type: String,
     required:true,
     default:"cashback"
   },
