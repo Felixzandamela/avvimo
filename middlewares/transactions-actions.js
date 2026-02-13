@@ -158,39 +158,35 @@ module.exports.WithdrawalsActions = async function (body, internal) {
   if (/^(Concluido|Anulado)$/i.test(withdrawal.status)) return errorMsgs("cantProcess", "saque");
 
   const datas = setDatas("withdrawals", body._id);
-  switch(body.status){
-    case "Rejeitado":
-      withdrawal.status = body.status;
-      const updatedWithdrawal = await withdrawal.save();
-      if (!updatedWithdrawal) return errorMsgs("errorAc", "saque", body.status);
-      return true;
-    break;
-    case "Anulado":
-      withdrawal.status = body.status;
-      const updatedWithdrawal = await withdrawal.save();
-      if (!updatedWithdrawal) return errorMsgs("errorAc", "saque", body.status);
-      const balanceUpdated = await Actions.increment("users", withdrawal.owner._id, ["balance"], withdrawal.amount);
-      if (!balanceUpdated) return "Erro ao atualizar saldo.";
-      return true;
-    break;
-    case "Concluido":
-      // implementar gateway de pagamento para enviar dinheiro ao usuário
-      withdrawal.status = body.status;
-      const updatedWithdrawal = await withdrawal.save();
-      if (!updatedWithdrawal) return errorMsgs("errorAc", "saque", body.status);
-      const owner = {
-        name: withdrawal.owner.name,
-        email: withdrawal.owner.email,
-        amount: withdrawal.totalReceivable,
-        _id: withdrawal._id
-      }
-      const send = await sendEmail(owner, "withdrawalsFunds");
-      return true;
-    break;
-    default:
-      return errorMsgs("default", "saque", body.status);
-    break;
-  }
+  if(body.status === "Rejeitado"){
+    withdrawal.status = body.status;
+    const updatedWithdrawal = await withdrawal.save();
+    if (!updatedWithdrawal) return errorMsgs("errorAc", "saque", body.status);
+    return true;
+  };
+  if(body.status === "Anulado"){
+    withdrawal.status = body.status;
+    const updatedWithdrawal = await withdrawal.save();
+    if (!updatedWithdrawal) return errorMsgs("errorAc", "saque", body.status);
+    const balanceUpdated = await Actions.increment("users", withdrawal.owner._id, ["balance"], withdrawal.amount);
+    if (!balanceUpdated) return "Erro ao atualizar saldo.";
+    return true;
+  };
+  if(body.status === "Concluido"){
+    // implementar gateway de pagamento para enviar dinheiro ao usuário
+    withdrawal.status = body.status;
+    const updatedWithdrawal = await withdrawal.save();
+    if (!updatedWithdrawal) return errorMsgs("errorAc", "saque", body.status);
+    const owner = {
+      name: withdrawal.owner.name,
+      email: withdrawal.owner.email,
+      amount: withdrawal.totalReceivable,
+      _id: withdrawal._id
+    }
+    const send = await sendEmail(owner, "withdrawalsFunds");
+    return true;
+  };
+  return errorMsgs("default", "saque", body.status);
 };
 
 module.exports.getTransactions = async function(mode,body,type,user){
