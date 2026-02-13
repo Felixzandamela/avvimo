@@ -80,6 +80,7 @@ const Main = ({props, onChanges}) =>{
   
   async function getUser(_id) {
     const baseUrl = document.getElementById("baseUrl").value;
+    alert(baseUrl)
     let url = `${baseUrl}/me?_id=${_id}`;
     try {
       let response = await fetch(url);
@@ -90,6 +91,7 @@ const Main = ({props, onChanges}) =>{
       return userDatas;
     } catch (error) {
       console.error(error);
+      alert(error)
       return null;
     }
   }
