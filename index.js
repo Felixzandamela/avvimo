@@ -26,6 +26,7 @@ const auth = require('./routers/auth');
 const index = require('./routers/index');
 const admin = require('./routers/admin');
 const {Actions} = require('./middlewares/action');
+const _protocal = process.env.PROTOCAL;
 const _host = process.env.HOST;
 const company = process.env.COMPANY;
 const {authentication, authAdmin} = require("./middlewares/authentication");
@@ -93,11 +94,9 @@ app.use(flash());
 
 //middlewares
 app.use(async(req, res, next)=>{
-  console.log(req.protocol);
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
-  res.locals.baseUrl = `${req.protocol}://${_host}`;
-  res.locals.supportUrl = `${req.protocol}://${_host}`;
+  res.locals.baseUrl = `${_protocal}${_host}`;
   res.locals.company = company;
   res.locals.gateways = await Actions.get("gateways", {status: true});
   res.locals.user = req.user? await transformDatas(_defineProperty(req.user._doc),true) : null;
