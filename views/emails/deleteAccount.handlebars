@@ -96,6 +96,7 @@
       border-radius:0 0 10px 10px;
       background:#fff;
     }
+    .warning{color: red;}
   </style>
   </head>
   <body>
@@ -103,8 +104,7 @@
       <div class="header">
         <div class="email-logo">
           <div style="text-align: center;" class="logo-wrap">
-            <img  class="img" src="{{logo}}" alt="logo" />
-            <h2>{{companyName}}</h2>
+            <img class="img" src="{{logo}}" alt="logo"/>{{companyName}}
           </div>
         </div>
       </div>
@@ -113,7 +113,7 @@
         <h2 class="email-title">Pedido de deletar conta</h2>
         <div class="email-body">
           <p class="email-text">Um evento de deletar conta foi acionado e a sua conta foi agendado para ser deletado dentro de 30 dias.</p>
-          <p class="email-text">A sua conta será deletado permanentemente dentro de 30 dias se não cancelar este evento.</p>
+          <p class="email-text warning">A sua conta será deletado permanentemente dentro de 30 dias se não cancelar este evento.</p>
           
           <a href="{{link}}" target="_blank">
             <button type="submit" class="btn-link primary-color">Cancelar este envento</button>
