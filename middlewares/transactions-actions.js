@@ -155,16 +155,10 @@ module.exports.WithdrawalsActions = async function (body, internal) {
 
   let withdrawal = await Actions.get("withdrawals", body._id, ["owner"]);
   if (!withdrawal) return errorMsgs("empty", "saque");
-  if (/^(Concluido|Anulado)$/i.test(withdrawal.status)) return errorMsgs("cantProcess", "saque");
+  if (/^(Concluido|Anulado|Rejeitado)$/i.test(withdrawal.status)) return errorMsgs("cantProcess", "saque");
 
   const datas = setDatas("withdrawals", body._id);
-  if(body.status === "Rejeitado"){
-    withdrawal.status = body.status;
-    const updatedWithdrawal = await withdrawal.save();
-    if (!updatedWithdrawal) return errorMsgs("errorAc", "saque", body.status);
-    return true;
-  }
-  if(body.status === "Anulado"){
+  if(/^(Anulado|Rejeitado)$/i.test(body.status)){
     withdrawal.status = body.status;
     const updatedWithdrawal = await withdrawal.save();
     if (!updatedWithdrawal) return errorMsgs("errorAc", "saque", body.status);
