@@ -1078,7 +1078,7 @@ input::placeholder{color: var(--s-color);}
   z-index: 1;
   background: red;
   position: absolute;
-  left: -20px;
+  left: -10px;
   top: 22px;
   font-weight:bold;
   transform: rotate(-45deg);
