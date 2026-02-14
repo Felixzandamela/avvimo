@@ -152,7 +152,7 @@ cabinet.post("/newwithdraw", urlencodedParser, async (req,res)=>{
   const user = req.user;
   const accounts = await getAccounts(req.user, true);
   const gateway = await Actions.get("gateways", bodys.gateway);
-  
+  const withdrawals = await Actions.get("withdrawals", {status: {$in:["Pendente", "Rejeitado"], owner: req.user._id});
   const account = accounts.filter((item)=>{if(item.account === `${bodys.account}` || `${item.account}` === bodys.account){return true;}});
 
   class NewWithdraw{
@@ -177,6 +177,9 @@ cabinet.post("/newwithdraw", urlencodedParser, async (req,res)=>{
   try{
     if(bodys.amount > user.balance || bodys.amount  < 50 || account.length <= 0 ||  isGatawayCurrect(gateway.name, bodys.account)){
       res.status(200).render('cabinet/catchs', alertDatas);
+    }else if(withdrawals){
+      const aler = objRevised(alertDatas, {title:"Desculpa", texts:"Você tem um saque pendente, por favor tenta mais tarde"});
+      res.status(200).render('cabinet/catchs', aler);
     }else{
       const results = await Actions.set(datas, null, true);
       console.log("results:", results)
