@@ -280,7 +280,7 @@ module.exports.getTransaction = async function( mode, type, _id){
     }
   }
   
-  const showBtns = /^(Pendente|Rejeitado)$/i.test(datas.status) ||  datas.status === "EmProgresso" && datas.expireAt.secondsLength > 0 ;
+  const showBtns = /^(Pendente|Rejeitado)$/i.test(datas.status)  ||  datas.status === "EmProgresso" && datas.expireAt.secondsLength > 0 ;
   const btnsArray = [
     {value: !isDeposit? "Processar" : isIatured && isAdmin ? "Processar" : "Confirmar", action: !isDeposit? "Concluido" : isIatured && isAdmin ? "Concluido" : "EmProgresso", icon:"bi bi-check-circle"},
     {value: "Rejeitar",action:"Rejeitado",icon:"bi bi-slash-circle"},
