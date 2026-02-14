@@ -73,6 +73,10 @@ try{
   if(document.querySelectorAll(".alertEvent")){
     toggles("alertEvent","canselAlert","alertBox");
   }
+  
+  if(document.querySelectorAll(".fleetEvent")){
+    toggles("fleetEvent","canselFleet","alertFleet");
+  }
 }catch(error){};
 
 try{
