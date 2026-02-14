@@ -74,8 +74,8 @@ try{
     toggles("alertEvent","canselAlert","alertBox");
   }
   
-  if(document.querySelectorAll(".fleetEvent")){
-    toggles("fleetEvent","canselFleet","alertFleet");
+  if(document.querySelectorAll(".oEvent")){
+    toggles("oEvent","canselO","alertO");
   }
 }catch(error){};
 
