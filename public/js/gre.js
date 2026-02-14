@@ -164,6 +164,17 @@ try{
 }catch(error){};
 
 try{
+  if(document.querySelectorAll(".accountType")){
+    const accountType = [...document.querySelectorAll(".accountType")];
+    accountType.forEach((num)=>{
+      num.addEventListener("click",()=>{
+        document.getElementById("account").type = num.accessKey;
+      });
+    });
+  }
+}catch(error){};
+
+try{
   const  emojisExpressions = ["bi bi-emoji-neutral", "bi bi-emoji-frown", "bi bi-emoji-expressionless", "bi bi-emoji-smile", "bi bi-emoji-heart-eyes"];
   const colorsArray = ["red","orange", "lightblue","lightgreen","gold"];
   if(document.querySelectorAll(".star")){
