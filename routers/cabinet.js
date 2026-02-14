@@ -152,7 +152,7 @@ cabinet.post("/newwithdraw", urlencodedParser, async (req,res)=>{
   const user = req.user;
   const accounts = await getAccounts(req.user, true);
   const gateway = await Actions.get("gateways", bodys.gateway);
-  const withdrawals = await Actions.get("withdrawals", {status: {$in:["Pendente", "Rejeitado"], owner: req.user._id});
+  const withdrawals = await Actions.get("withdrawals", {status: {$in:["Pendente", "Rejeitado"]}, owner: req.user._id});
   const account = accounts.filter((item)=>{if(item.account === `${bodys.account}` || `${item.account}` === bodys.account){return true;}});
 
   class NewWithdraw{
