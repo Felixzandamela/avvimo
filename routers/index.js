@@ -10,8 +10,14 @@ const {authentication} = require("../middlewares/authentication");
 const {getFleets} = require("../middlewares/getFleets");
 const {getReviews} = require("../middlewares/getReviews");
 router.get('/', async(req,res)=>{
+  const activeYears = (date) => {
+    let time = (new Date()).getTime() - date.getTime();
+    let year = Math.floor(time / 1000/60/60/24/30/12); //Milliseconds/seconds/minutes/hours/days/months/yeas
+    return year;
+  } //return years of activitys 
+  const yearsOfActivitys = activeYears("Oct, 12 2022");
   const datas = await getFleets("cabinet");
-  res.render("mains/home",{fleets:datas});
+  res.render("mains/home",{fleets:datas, yearsOfActivitys:yearsOfActivitys});
 });
 
 router.get("/how-it-works",(req,res)=>{
