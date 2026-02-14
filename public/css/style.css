@@ -1141,7 +1141,8 @@ input::placeholder{color: var(--s-color);}
 .package_body .flex_b.padd5-tb div{
   color: var(--s-color);
 }
-.package_body p{font-weight: 500;
+.package_body p{
+  font-weight: 500;
   word-break: break-word;
   text-align: right;
   padding-left: 10px;
