@@ -1079,7 +1079,7 @@ input::placeholder{color: var(--s-color);}
   background: red;
   position: absolute;
   left: -10px;
-  top: 22px;
+  top: 32px;
   font-weight:bold;
   transform: rotate(-45deg);
   webkit-clip-path: polygon(23% 0%, 77% 0%, 100% 100%, 0% 100%);
