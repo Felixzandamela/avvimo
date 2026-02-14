@@ -194,7 +194,7 @@ input::placeholder{color: var(--s-color);}
 .a_c_menu .active{background:var(--main-color);color: #fff;}
 .a_c_menu .danger:hover{background: rgb(var(--danger-color))!important;color: #fff;}
 .a_c_menu .danger{color: rgb(var(--danger-color));}
-
+.a_chat_header .a_c_menu{min-width:170px!important;}
 .scrollToTop{
   color: #fff;
   background: var(--main-color);
@@ -1055,7 +1055,7 @@ background: transparent;
 
 .valueToCopyPaste{
   position:fixed;
-  left:-300%;
+  right:-300%;
   z-index: 1000;
   user-select:text!important;
 }
