@@ -641,13 +641,8 @@ input::placeholder{color: var(--s-color);}
   background: var(--main-color);
 }
 .valueToCopy{
-<<<<<<< HEAD
-  position:absolute;
-  left:-200%;
-=======
   position:fixed;
   right: -200%;
->>>>>>> 49f8b08 (Primeiro commit)
 } 
 @media screen and (min-width:1200px){
   .a_aside_close{display: none;}
@@ -1491,15 +1486,13 @@ input[type="radio"] {
     border-left: 2px solid var(--border);
   }
 }
-<<<<<<< HEAD
 
-=======
 .f_card .balance{
   font-size: 0.8rem;
   color: var(--s-color);
 }
 .f_card > .balance >span{color: var(--main-color)!important;}
->>>>>>> 49f8b08 (Primeiro commit)
+
 @media screen and (min-width:768px){
   a_form_container{
   max-height: calc(100vh - 100px);
@@ -1619,9 +1612,6 @@ form_card_b{
   color: var(--s-color)!important;
 }
 
-<<<<<<< HEAD
-=======
-
 .invite_wrap,.m_invite_card,.m_invite_card .a_container,.m_card{width: 100%;}
 .invite_link_card, .m_invite_card{flex-grow: 1;}
 
@@ -1643,8 +1633,6 @@ form_card_b{
   .i_card_link, .m_invite_card .a_container{height: 100%;}
 }
 
-
->>>>>>> 49f8b08 (Primeiro commit)
 .i_card_link{background: rgba(var(--main-color-rgba),0.10);}
 .i_icon{
   width: 35px;

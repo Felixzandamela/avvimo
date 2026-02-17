@@ -2,14 +2,9 @@ const {Actions} = require("./action");
 const {cardDatas} = require("./utils");
 module.exports.performance = async (arryFields, filterBy) => {
   const transactionsMap = {};
-<<<<<<< HEAD
-  const query = filterBy ? {owner: filterBy} : null;
-  for (const field of arryFields) {
-=======
   for (const field of arryFields) {
     const key = field === "users" ?  "upline" : "owner";
     const query = filterBy ?  {[key] : filterBy} : null;
->>>>>>> 49f8b08 (Primeiro commit)
     if(!/^(earnings|payouts)$/i.test(field)){
       transactionsMap[field] = await Actions.get(field, query);
     }

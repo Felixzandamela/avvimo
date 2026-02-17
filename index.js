@@ -22,20 +22,12 @@ const app = express();
 require('dotenv').config();
 
 const cabinet = require('./routers/cabinet');
-<<<<<<< HEAD
 const auth = require('./routers/auth');
-const index = require('./routers/index');
-const admin = require('./routers/admin');
-const {Actions} = require('./middlewares/action');
-=======
-const authRoute = require('./routers/auth');
 const index = require('./routers/index');
 const admin = require('./routers/admin');
 const {Actions} = require('./middlewares/action');
 const {performance} = require("./middlewares/performances");
 
-
->>>>>>> 49f8b08 (Primeiro commit)
 const _protocal = process.env.PROTOCAL;
 const _host = process.env.HOST;
 const company = process.env.COMPANY;
@@ -104,22 +96,15 @@ app.use(flash());
 
 //middlewares
 app.use(async(req, res, next)=>{
-<<<<<<< HEAD
-=======
   const arryFields = ["users"];
   const afiliantesCard =  req.user? await performance(arryFields, req.user._id) : null;
-  console.log(afiliantesCard)
->>>>>>> 49f8b08 (Primeiro commit)
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
   res.locals.baseUrl = `${_protocal}${_host}`;
   res.locals.company = company;
   res.locals.gateways = await Actions.get("gateways", {status: true});
   res.locals.user = req.user? await transformDatas(_defineProperty(req.user._doc),true) : null;
-<<<<<<< HEAD
-=======
   res.locals.afiliantes = afiliantesCard ? afiliantesCard.cards[0] : null;
->>>>>>> 49f8b08 (Primeiro commit)
   res.locals.storage = storage.getItem("dbStorage");
   next();
 });
@@ -172,18 +157,14 @@ app.use('/cabinet', authentication, (req, res, next) => {
 
 app.use("/cabinet", cabinet);
 app.use("/admin", admin);
-<<<<<<< HEAD
 app.use("/auth",auth); /*vhost("auth.localhost",*/ 
-=======
-app.use("/auth",authRoute); /*vhost("auth.localhost",*/ 
->>>>>>> 49f8b08 (Primeiro commit)
 app.use(index);
+
 app.post('/csp-violation', (req, res) => {
   console.log(req.body);
   res.status(204).send('');
 });
 /*
-
 const options = { 
   key: fs.readFileSync("server.key"), 
   cert: fs.readFileSync("server.cert"), 

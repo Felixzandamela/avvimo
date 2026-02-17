@@ -17,11 +17,7 @@ const alertDatas = {
   type:"error",
   title:"Erro!",
   texts: "Houve um erro, por favor tente mais tarde. Se o erro persistir, por favor contacte-nos atrás dos nossos canaís.",
-<<<<<<< HEAD
-  btnTitle: "Pagína inicíal",
-=======
   btnTitle: "Voltar",
->>>>>>> 49f8b08 (Primeiro commit)
   redirectTo: "/auth/"
 }
 auth.get("/",(req,res)=>{
@@ -55,11 +51,7 @@ auth.get('/request-reset-password', urlencodedParser, (req, res)=>{
   res.status(200).render("auth/forgot-password",{quote:quote(),email:email});
 });
 
-<<<<<<< HEAD
 
-
-=======
->>>>>>> 49f8b08 (Primeiro commit)
 auth.post('/sign-up', urlencodedParser, async (req,res) =>{
   const bodys = await transformDatas(req.body);
   let datas = {
@@ -92,11 +84,7 @@ auth.get("/send-verification", urlencodedParser, async (req, res) => {
     type:"error",
     title:owner? "Verifica a sua conta" : "Houve um erro",
     texts:owner? "Um e-mail de verificação da conta foi enviado no seu inbox. Por favor verifique a sua conta." : "Este usuario está indisponível.\nPor favor tente mais tarde!",
-<<<<<<< HEAD
-    btnTitle: owner? "Reenvir novamente": "Ir para pagína inicíal",
-=======
     btnTitle: owner? "Reenvir novamente": "Voltar",
->>>>>>> 49f8b08 (Primeiro commit)
     redirectTo:owner? `/auth/send-verification?id=${id}` : "/auth/"
   }
   if(owner){
@@ -144,21 +132,6 @@ auth.get("/account-verification", urlencodedParser, async (req,res)=>{
 
 auth.post("/request-reset-password", urlencodedParser, async (req,res)=>{
   const email = req.body.email;
-<<<<<<< HEAD
-  const account = await Actions.get("users",{email:email});
-  if(account){
-    account.requestchangesdate = getTime().fullDate;
-    try{
-      const save = await account.save();
-      const d ={
-        type:"success",
-        title:"Pedido submetido",
-        texts:"O seu pedido de redifinição da conta foi submetido. Um email de redifinição da conta foi enviado no seu inbox."
-      }
-      const send = await sendEmail(account,"resetpassword");
-      const msg = objRevised(alertDatas,d);
-      res.status(200).render("mains/cards-th", msg);
-=======
   let account = await Actions.get("users",{email:email}, null, true);
   if(account){
     let datas = {
@@ -178,7 +151,6 @@ auth.post("/request-reset-password", urlencodedParser, async (req,res)=>{
         const msg = objRevised(alertDatas,{ type:result.type, texts: result.texts});
         res.status(200).render("mains/cards-th", msg);
       }
->>>>>>> 49f8b08 (Primeiro commit)
     }catch(error){
       console.log(error);
       const data = objRevised(alertDatas,{redirectTo:"/auth/request-reset-password"});
@@ -236,40 +208,6 @@ auth.post("/new-password", urlencodedParser, async (req,res)=>{
   }
 });
 
-<<<<<<< HEAD
-auth.post("/account_action", urlencodedParser, async(req,res)=>{
-  const bodys = await transformDatas(req.body);
-  const {_id,type} = bodys;
-  const datas = {
-    type:"update",
-    redirect: `/cabinet/dashboard`,
-    collection: "users",
-    data:{
-      cronTodelete: type? expireDay(30) : []
-    }
-  }
-  
-  const account = await Actions.get("users",_id);
-  if(account){
-    const results = await Actions.update(_id,datas);
-    if(results){
-      if(type){
-        const send = await sendEmail(account, "requestdeleteaccount");
-         req.flash(results.type, results.text);
-         res.redirect(302,results.redirect);
-      }else{
-        req.flash(results.type, results.text);
-        res.redirect(302,results.redirect);
-      }
-    }
-  }else{
-    req.flash("error", "Este usuarío não está disponível");
-    res.redirect(datas.redirect);
-  }
-});
-
-=======
->>>>>>> 49f8b08 (Primeiro commit)
 auth.post('/login', urlencodedParser, (req, res, next)=>{
   const redirectTo = storage.getItem("redirectTo");
   const go = !redirectTo ? "/cabinet/dashboard" : redirectTo;
