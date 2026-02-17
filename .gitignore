@@ -6,11 +6,8 @@ node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-<<<<<<< HEAD
-package-lock.json
-=======
 package-lock.json*
 text.txt*
 index.html*
 test.js
->>>>>>> 49f8b08 (Primeiro commit)
+
