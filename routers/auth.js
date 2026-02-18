@@ -143,8 +143,9 @@ auth.post("/request-reset-password", urlencodedParser, async (req,res)=>{
     try{
       const _id = ""+account._id;
       const result = await Actions.update(_id,datas);
-      if(result.type == "success"){
+      if(result.type === "success"){
         const send = await sendEmail(account,"resetpassword");
+        console.log(send);
         const msg = objRevised(alertDatas,{ type:"success",title:"Pedido submetido", texts:"O seu pedido de redifinição da conta foi submetido. Um email de redifinição da conta foi enviado no seu inbox."});
         res.status(200).render("mains/cards-th", msg);
       }else{
