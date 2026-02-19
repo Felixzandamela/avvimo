@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const {allowInsecurePrototypeAccess} = require('@handlebars/allow-prototype-access');
 const Handlebars = require('handlebars');
 const {engine}= require('express-handlebars');
-//*const useragent = require('express-useragent');
 const storage = require('node-sessionstorage')
 
 const session = require('express-session');
@@ -56,9 +55,7 @@ mongoose.connect(DATABASE).then(async() => {
     showWarning: (((total - used) / total) * 100) < 10 ? true : false
   }
   storage.setItem("dbStorage",dbStorage);
-}).catch((erro) => {
-  console.log("Ops ocorreu um erro :" + erro);
-});
+}).catch((erro) => {console.log("Ops ocorreu um erro :" + erro);});
 
 const jsonParser = bodyParser.json();
 var urlencodedParser = bodyParser.urlencoded({ extended: true })
@@ -87,56 +84,49 @@ app.use(session({
   }
 }));
 
-//*app.use(useragent.express());
 app.use(cookieParser());
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 
-
 //middlewares
 app.use(async(req, res, next)=>{
   const arryFields = ["users"];
-  const afiliantesCard =  req.user? await performance(arryFields, req.user._id) : null;
+  const affiliatesCard =  req.user? await performance(arryFields, req.user._id) : null;
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
   res.locals.baseUrl = `${_protocal}${_host}`;
   res.locals.company = company;
   res.locals.gateways = await Actions.get("gateways", {status: true});
   res.locals.user = req.user? await transformDatas(_defineProperty(req.user._doc),true) : null;
-  res.locals.afiliantes = afiliantesCard ? afiliantesCard.cards[0] : null;
+  res.locals.affiliates = affiliatesCard ? affiliatesCard.cards[0] : null;
   res.locals.storage = storage.getItem("dbStorage");
   next();
 });
 
-
+/*
+app.use(helmet());
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "blob:", "'unsafe-inline'","https://cdnjs.cloudflare.com","https://code.highcharts.com"],
+      styleSrc: ["'self'","'unsafe-inline'","https://cdn.jsdelivr.net","https://fonts.googleapis.com", "https://cdnjs.cloudflare.com"],
+      fontSrc: ["'self'","data:","https://cdn.jsdelivr.net","https://fonts.googleapis.com", "https://fonts.gstatic.com" ,"https://cdnjs.cloudflare.com"],
+      imgSrc: ["'self'","data:", "blob:", "'unsafe-inline'"],
+      connectSrc: ["'self'","https://ipinfo.io"],
+      frameSrc: ["'self'"],
+      objectSrc: ["'self'"]
+    }
+  })
+);
+*/
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   next();
 });
-
-
-/*
-
-app.use(helmet());
-app.use(
-  helmet.contentSecurityPolicy({
-    directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'","blob:", "'unsafe-eval'", "'unsafe-inline'", "https://unpkg.com","https://cdnjs.cloudflare.com","https://*.gstatic.com","https://*.firebaseapp.com","https://*.firebaseio.com", "https://*.google.com"],
-      styleSrc: ["'self'", "'unsafe-inline'","https://cdn.jsdelivr.net","https://googleapis.com","https://unpkg.com", "https://cdnjs.cloudflare.com"],
-      fontSrc: ["'self'", "https://cdn.jsdelivr.net","https://googleapis.com","https://cdnjs.cloudflare.com"],
-      imgSrc: ["'self'","data:", "'unsafe-inline'", "'https://example.com'"],
-      connectSrc: ["'self'", "https://www.gstatic.com","https://firebaseapp.com","https://firebaseio.com","https://apis.google.com"],
-      frameSrc: ["'self'", "https://www.gstatic.com","https://firebaseapp.com","https://firebaseio.com"],
-      objectSrc: ["'self'", "https://www.gstatic.com","https://firebaseapp.com","https://firebaseio.com", "https://apis.google.com"],
-    },
-  })
-);
-
-*/
 
 app.use('/admin', authAdmin, (req, res, next) => {
   const isAdmin = true;
@@ -160,10 +150,6 @@ app.use("/admin", admin);
 app.use("/auth",auth); /*vhost("auth.localhost",*/ 
 app.use(index);
 
-app.post('/csp-violation', (req, res) => {
-  console.log(req.body);
-  res.status(204).send('');
-});
 /*
 const options = { 
   key: fs.readFileSync("server.key"), 
@@ -178,22 +164,4 @@ https.createServer(options, app).listen(port, () => {
 });
 */
 
-app.listen(port, () => {
-  const ip = getIPAddress();
-  console.log(`listening at ${ip}`);
-});
-
-
-function getIPAddress() {
-  const interfaces = os.networkInterfaces();
-  for (const devName in interfaces) {
-    const iface = interfaces[devName];
-    for (let i = 0; i < iface.length; i++) {
-      const alias = iface[i];
-      if (alias.family === 'IPv4' && alias.address !== '127.0.0.1' && !alias.internal) {
-        return `http://${alias.address}:${port}`;
-      }
-    }
-  }
-  return `http://localhost:${port}`;
-}
+app.listen(port, () => {console.log(`listening at localhost`);});

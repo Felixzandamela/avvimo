@@ -247,16 +247,13 @@ cabinet.post("/account_action", urlencodedParser, async(req,res)=>{
     type:"update",
     redirect: `/cabinet/dashboard`,
     collection: "users",
-    data:{
-      cronTodelete: type? expireDay(30) : [],
-      inDeleteQueue: type? true : false
-    }
+    data:{inDeleteQueue:{status: type? true : false}}
   }
   const account = await Actions.get("users",_id);
   if(account){
     const results = await Actions.update(_id,datas);
     const {type,text,redirect} = results;
-    if(results.type === "success" && datas.data.inDeleteQueue){
+    if(results.type === "success" && datas.data.inDeleteQueue.status){
       const send = await sendEmail(account, "requestdeleteaccount");
     }
     res.redirect(redirect);

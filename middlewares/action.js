@@ -29,7 +29,7 @@ const collections = {
   reviews: Reviews,
   images: Images
 };
-
+module.exports.db = collections;
 module.exports.Actions = (function () {
   // helper to validate collection name
   function validCollection(name) {
@@ -371,3 +371,7 @@ module.exports.Actions = (function () {
     }
   };
 })();
+
+// use has you need it
+//db.users.updateMany({ inDeleteQueue: true }, { $set: { inDeleteQueue: { status: false, date: [] } } })
+// db.users.updateMany({}, { $unset: { cronTodelete: "" } }).then((h)=>{

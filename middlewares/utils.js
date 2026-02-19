@@ -2,6 +2,17 @@ const express = require("express");
 const bcrypt = require("bcryptjs");
 function joinZero(number){return(number < 10 ? "0" + number : number).toString();}
 
+const idGenerator = (length,type)=>{
+  let string = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_", number = "0123456789", id="" , characters,size;
+  switch(type){
+    case "code": characters = number; size = 6; break;
+    default: characters = string; size= length? length : 16; break;
+  }
+  for(var i=0; i < size; i++) {id += characters[Math.floor(Math.random()*characters.length)];}
+  return id;
+}
+module.exports.idGenerator = function(type,length){return idGenerator(type,length);}
+
 const texts ={
   timeUnits:["Agora","minuto","hora","dia","mês","ano"],
   ago:"atrás",
@@ -190,13 +201,22 @@ module.exports.propertysLength = function(datas){return propertysLength(datas)};
 
 const objRevised = function(datas, nester){
   const keys = Object.getOwnPropertyNames(nester);
-  for(let k in keys){
-    if(!datas[keys[k]]){
-      datas[keys[k]] = nester[keys[k]];
-    }else{datas[keys[k]] = nester[keys[k]];}
+  for(let key of keys){
+    if(!datas[key]){
+      datas[key] = nester[key];
+    }else{
+      if(typeof nester[key] === "object"){
+        for(let child in nester[key]){
+          datas[key][child] = nester[key][child]
+        }
+      }else{
+        datas[key] = nester[key];
+      }
+    }
   }
   return datas;
 };
+
 module.exports.objRevised = function(datas,nester){return objRevised(datas,nester);};
 
 const isBoolean = function(data){

@@ -141,7 +141,7 @@ auth.post("/request-reset-password", urlencodedParser, async (req,res)=>{
       data: {requestchangesdate: getTime().fullDate}
     }
     try{
-      const _id = ""+account._id;
+      const _id = account._id.toString();
       const result = await Actions.update(_id,datas);
       if(result.type === "success"){
         const send = await sendEmail(account,"resetpassword");
@@ -153,7 +153,7 @@ auth.post("/request-reset-password", urlencodedParser, async (req,res)=>{
         res.status(200).render("mains/cards-th", msg);
       }
     }catch(error){
-      console.log(error);
+      console.error(error);
       const data = objRevised(alertDatas,{redirectTo:"/auth/request-reset-password"});
       res.status(404).render("mains/cards-th",data);
     };
@@ -209,20 +209,111 @@ auth.post("/new-password", urlencodedParser, async (req,res)=>{
   }
 });
 
-auth.post('/login', urlencodedParser, (req, res, next)=>{
+
+auth.get("/verifying-identity", urlencodedParser, async (req,res)=>{
+  const sendcode = req.query.sendcode || storage.getItem("sendcode");
+  const _id = storage.getItem("_id");
+  if(!_id){res.redirect("/auth/login");}
+  const result = await Actions.get("users",_id);
+  if(result){
+    if(sendcode){
+      result.bruteForce.rescue = true;
+      result.save().then(async (user)=>{
+        const send = await sendEmail(user, "verifyingIdentity");
+        storage.setItem("sendcode","");
+        res.render("auth/verifyingIdentity",{_id:_id});
+      }).catch((error)=>{
+        console.error(error);
+        res.status(404).render("mains/cards-th",alertDatas);
+      });
+    }else{res.render("auth/verifyingIdentity",{_id:_id});}
+  }else{res.status(404).render("mains/cards-th",alertDatas);}
+});
+
+auth.post("/verifying-identity", urlencodedParser, async (req, res)=>{
+  const {_id, vcode} = req.body;
+  const datas = {
+    type:"update",
+    redirect: `/cabinet/dashboard`,
+    collection: "users",
+    data:{bruteForce:{active:false,rescue:false}}
+  }
+  const result = await Actions.get("users", _id);
+  if(result){
+    const {date, code, rescue, active} = result.bruteForce;
+    let msg = null;
+    if(formatDate(date).minutesLength >= 15 || vcode!== code){
+      msg = "Código errado ou expirado!";
+    }else if(_id !== result._id.toString()){
+      msg = "Ops desculpa houve um erro";
+    }
+    if(msg){
+      res.render("auth/verifyingIdentity",{_id:_id,msg:msg});
+    }else{
+      const updateBruteForce = await Actions.update(_id, datas);
+      if(updateBruteForce.type === "success"){
+        res.redirect(updateBruteForce.redirect);
+        storage.setItem("_id","");
+        primarySet = false;
+      }else{
+        req.flash("error", updateBruteForce.text);
+        res.render("mains/cards-th",alertDatas);
+      }
+    }
+  }else{
+    res.redirect("/auth/verifying-identity");
+   
+  }
+});
+
+let tentativas = {};
+auth.post('/login', urlencodedParser, (req, res, next) => {
   const redirectTo = storage.getItem("redirectTo");
   const go = !redirectTo ? "/cabinet/dashboard" : redirectTo;
-  passport.authenticate("local", {
-    successRedirect: go,
-    failureRedirect: "/auth/login",
-    failureFlash: true
-   })(req, res, next);
+  const {username,extraInfos} = req.body;
+  const datas = {
+    type:"update",
+    redirect: `/cabinet/dashboard`,
+    collection: "users",
+    data:{bruteForce:{active:true}}
+  }
+  passport.authenticate("local", async (err, user, info) => {
+    if(!user){
+      if (info.message === "Senha incorrecta!") {
+        if (!tentativas[username]) {tentativas[username] = 1;} else {tentativas[username]++;}
+        if (tentativas[username] >= 3) {
+          // Enviar email de alerta
+          const currentAttemptor = await Actions.get("users",{email:username},null,true);
+          if(currentAttemptor){
+            const result = await Actions.update(currentAttemptor._id, datas, true);
+            const datasForEmail = {
+              name: currentAttemptor.name,
+              email: currentAttemptor.email,
+              agentDetails: extraInfos ? JSON.parse(extraInfos) : null
+            }
+            const send = await sendEmail(datasForEmail, "bruteForceAlert");
+          }
+          req.flash('error', 'Senha incorreta!');
+        }else{req.flash("error",info.message)}
+      }else{req.flash('error', info.message);}
+      return res.redirect(`/auth/login`);
+    }
+    // Login bem-sucedido
+    req.logIn(user, (err, info) => {
+      if (err) {console.error(err);
+        return res.redirect(`/auth/login`);
+      }
+      tentativas[username] = 0;
+      return res.redirect(go);
+    });
+  })(req, res, next);
 });
 
 auth.get('/logout', function(req, res, next){
   req.logout(function(err) {
     if (err) { return next(err); }
      req.user = null;
+     
     res.redirect(`/auth/login`);
   });
 });

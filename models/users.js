@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const {getTime,getColor} = require('../middlewares/utils');
+const {getTime,getColor,expireDay,idGenerator} = require('../middlewares/utils');
 const Schema = mongoose.Schema;
   
 const Users = new Schema({
@@ -25,14 +25,6 @@ const Users = new Schema({
   phoneNumber:{
     type:Number,
     required:false,
-  },
-  location:{
-    type:String,
-    required:false
-  },
-  agent:{
-    type:String,
-    required:false
   },
   email:{
     type: String,
@@ -74,25 +66,53 @@ const Users = new Schema({
     required: true,
     default:getTime().fullDate
   },
+  
   requestchangesdate:{
     type: Array,
     require: false,
   },
-  cronTodelete:{
-    type: Array,
-    require:false,
-    default:[]
-  },
   inDeleteQueue:{
-    type:Boolean,
-    require:false,
-    default:false
+    status: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    date:{
+      type:Array,
+      required:false,
+      default:[]
+    }
   },
-  color:{
-    type: Object,
-    required: false,
-    default: getColor()
+  bruteForce:{
+    code:{
+      type: String,
+      required:false,
+      default:""
+    },
+    date:{
+      type:Array,
+      required:false,
+      default:[]
+    },
+    rescue:{
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    active:{
+      type: Boolean,
+      required: false,
+      default: false,
+    }
   }
 });
+// Middleware pre-save
+
+Users.pre('save', function(next) {
+  const isRescue = this.bruteForce.rescue;
+  this.bruteForce.code = isRescue? idGenerator(null,"code") : ""; 
+  this.bruteForce.date = isRescue? getTime().fullDate : [];
+  this.inDeleteQueue.date = this.inDeleteQueue.status ? expireDay(30) : [];
+});
+
 mongoose.model("users", Users);
-//dule.exports = mongoose.model('User');

@@ -51,6 +51,30 @@ try{
   }
 }catch(error){};
 
+
+try{
+  if(document.getElementById('extraInfos')){
+    const extraInfos = document.getElementById("extraInfos");
+    async function getClientLocation(){
+    let url = "https://ipinfo.io/json?token=b133d2b54b26e4";
+      try{
+        const res = await fetch(url), data = await res.json();
+        const {userAgent} = window.navigator;
+        const {platform} = window.navigator.userAgentData;
+        const navigatorDatas = {
+          ip:data.ip,
+          city: data.city,
+          region: data.region,
+          country: data.country,
+          device: platform,
+          userAgent: userAgent
+        }
+        extraInfos.value = JSON.stringify(navigatorDatas);
+      }catch(error){console.log(error);}
+    }
+    getClientLocation();
+  }
+}catch(error){};
 const toggles = function(btn,close,popup){
   const btns = [...document.querySelectorAll(`.${btn}`)];
   const popups = [...document.querySelectorAll(`.${popup}`)];
@@ -110,3 +134,4 @@ window.addEventListener('scroll', handleScroll);
 scrollToTop.addEventListener("click",function(){window.scrollTo(0,0);});
   
 }
+

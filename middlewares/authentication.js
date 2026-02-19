@@ -54,6 +54,10 @@ module.exports = {
       res.status(403).redirect('/auth/login');
     }else if(!req.user.verified){
       res.status(401).render('mains/cards-th', getText(req));
+    }else if(req.user.bruteForce.active){
+      storage.setItem("_id", req.user._id.toString());
+      storage.setItem("sendcode","");
+      res.redirect("/auth/verifying-identity");
     }else{return next();}
   },
   authAdmin: async function (req, res, next) {
@@ -62,6 +66,10 @@ module.exports = {
       res.redirect('/auth/login');
     }else if(!req.user.verified){
       res.render('mains/cards-th', getText(req));
+    }else if(req.user.bruteForce.active){
+      storage.setItem("_id", req.user._id.toString());
+      storage.setItem("sendcode","");
+      res.redirect("/auth/verifying-identity");
     }else if(!req.user.isAdmin){
       const send = await sendEmail(getCeo(req), "unauthorizedNavigator");
       res.render('mains/cards-th', accessDeniedDatas(req));

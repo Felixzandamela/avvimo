@@ -40,8 +40,19 @@ module.exports.noReplyOptions = async function(item, type){
       path: `${protocol}${baseUrl}${item.path}`,
       subject: "Alerta!",
       template: 'emails/unauthorizedAdmin'
+    },
+    bruteForceAlert:{
+      path:null,
+      subject: "Alerta!",
+      template: 'emails/bruteForceAlert'
+    },
+    verifyingIdentity:{
+      path:null,
+      subject: "Verifica a sua identidade!",
+      template: 'emails/code'
     }
   }
+  console.log(item.bruteForce)
   return{
     from: ''+companyName+'"no-replay@avvimo.com"', // sender address
     to: item.email,
@@ -51,9 +62,11 @@ module.exports.noReplyOptions = async function(item, type){
       logo: `${protocol}${baseUrl}/imgs/logo1.png`,
       name: item.name,
       email: item.email,
-      guestEmail: item.guest? item.guest.email : "",
-      amount: item.amount? item.amount : "",
+      guestEmail: item?.guest?.email ,
+      amount: item?.amount,
+      code: item?.bruteForce?.code,
       time: formatDate().fullDate,
+      agentDetails: item?.agentDetails,
       companyName: companyName,
       location:"1120 Facim, Marracuene Maputo, Moçambique",
       link: datas[type].path,

@@ -262,8 +262,9 @@ cron.schedule('* * * * *', async () => {
   
   if(usersTodelete){
     for(let b in usersTodelete){
-      const {_id, cronTodelete, name} = usersTodelete[b];
-      if(formatDate(cronTodelete).secondsLength >= 1){
+      const {_id, name} = usersTodelete[b];
+      const {date} = usersTodelete[b].inDeleteQueue;
+      if(formatDate(date).secondsLength >= 1){
         const datas = {
           type: "delete",
           redirect:`/admin/users`,
