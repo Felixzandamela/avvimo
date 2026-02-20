@@ -291,6 +291,8 @@ auth.post('/login', urlencodedParser, (req, res, next) => {
               agentDetails: extraInfos ? JSON.parse(extraInfos) : null
             }
             const send = await sendEmail(datasForEmail, "bruteForceAlert");
+            //reset in each 3 attempts
+            attempts[username] = 0;
           }
           req.flash('error', 'Senha incorreta!');
         }else{req.flash("error",info.message)}

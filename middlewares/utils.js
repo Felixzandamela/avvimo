@@ -77,7 +77,6 @@ module.exports.coll = function(c){
 function concatURl(subdomin, query){
   const baseUrl = process.env.HOST;
   const protocol = process.env.PROTOCAL;
-
   let url = subdomin ? `${protocol}${subdomin}.${baseUrl}` : `${protocol}${baseUrl}`;
   let fullUrl = query? `${url}${query}` : url;
   return fullUrl;
@@ -199,22 +198,19 @@ const propertysLength = function(datas){
 module.exports.propertysLength = function(datas){return propertysLength(datas)};
 
 
-const objRevised = function(datas, nester){
-  const keys = Object.getOwnPropertyNames(nester);
-  for(let key of keys){
-    if(!datas[key]){
-      datas[key] = nester[key];
-    }else{
-      if(typeof nester[key] === "object"){
-        for(let child in nester[key]){
-          datas[key][child] = nester[key][child]
-        }
-      }else{
-        datas[key] = nester[key];
-      }
+const objRevised  = function(target, source) {
+  if (typeof target !== 'object' || typeof source !== 'object') {
+    throw new Error('target e source devem ser objetos');
+  }
+  for (const key in source) {
+    if (Object.hasOwn(source, key)) {
+      if (typeof source[key] === 'object' && source[key] !== null) {
+        if (!target[key] || typeof target[key] !== 'object') {target[key] = {};}
+        objRevised(target[key], source[key]);
+      } else {target[key] = source[key];}
     }
   }
-  return datas;
+  return target;
 };
 
 module.exports.objRevised = function(datas,nester){return objRevised(datas,nester);};
@@ -235,39 +231,56 @@ const crypt = async function(item){
   }
 };
 
-const transformDatas = async function(item,internal,nester){
-  let datas = typeof nester == "object" ? objRevised(item,nester) : item;
-  if(datas){
-  const keys = Object.getOwnPropertyNames(datas);
-  const newDatas = {};
-  for(let x in keys){
-    const name = keys[x];
-    if(!datas[name] && !internal){
-    }else if(name == "newpassword"){
-      newDatas["password"] = await crypt(datas[name]);
-    }else if(/^(account|phoneNumber)$/i.test(name)){
-      newDatas[name] = datas[name];
-    }else if(name == "ids"){
-      newDatas[name] = datas[name].split(">>>");
-    }else if(/^(date|expireAt|cronTodelete)$/i.test(name)){
-      if(internal){
-        newDatas[name] = Array.isArray(datas[name]) && datas[name].length > 0 ? formatDate(datas[name]) : null;
-      }else{
-        newDatas[name] = /^(expireAt|cronTodelete)$/i.test(name)? expireDay(datas[name]) : getTime().fullDate;
+const containHtml = /<[a-z][\s\S]*>/i;
+const defineValue = function(key,value,internal){
+  if(!value && !internal){return}
+  else if(typeof value === "string" && !!value.match(containHtml) && !internal){return
+  }else if(/^(account|phoneNumber)$/i.test(key)){return value;
+  }else if(key === "ids"){return value.split(">>>");
+  }else if(/^(date|expireAt)$/i.test(key)){
+    if(internal){return Array.isArray(value) && value.length > 0 ? formatDate(value) : null;
+    }else{return /^(expireAt)$/i.test(key)? expireDay(value) : getTime().fullDate;}
+  }else if(typeof isBoolean(value) === "boolean"){return isBoolean(value);
+  }else if(!isNaN(value) && value || typeof value === "number"){
+    return internal? transformNumber(value) : parseFloat(value);
+  }else{return value;}
+}
+
+const transformDatas = async function(obj, internal, sObj) {
+  if (typeof obj !== 'object' || sObj && typeof sObj !== 'object') {
+    throw new Error('obj e sObj devem ser objetos');
+  }
+  const shouldMerg = typeof sObj === "object";
+  const mergedObj = shouldMerg?  objRevised(obj, sObj) : obj;
+  const result = {};
+  for (const key in mergedObj) {
+    if (typeof mergedObj[key] === 'object' && !Array.isArray(mergedObj[key])) {
+      result[key] = transformObject(mergedObj[key], internal);
+    } else {
+      if (key === 'newpassword') {
+        const password = 
+        result['password'] = defineValue(key, password, internal);
+      } else {
+        result[key] = defineValue(key, mergedObj[key], internal);
+        if (!result[key] && !internal) delete result[key];
       }
-    }else if(typeof isBoolean(datas[name]) == "boolean"){
-      newDatas[name] = isBoolean(datas[name]);
-    }else if(!isNaN(datas[name]) && datas[name] || typeof datas[name] == "number"){
-      newDatas[name] = internal? transformNumber(datas[name]) : parseFloat(datas[name]);
-    }else{
-      newDatas[name] = datas[name];
     }
   }
-  return newDatas;
-  }else{
-    return;
-  }
+  return result;
 };
+
+const transformObject = function(obj, internal) {
+  const result = {};
+  for (const key in obj) {
+    if (typeof obj[key] === 'object' && !Array.isArray(obj[key])) {
+      result[key] = transformObject(obj[key], internal);
+    } else {
+      result[key] = defineValue(key, obj[key], internal);
+    }
+  }
+  return result;
+};
+
 module.exports.transformDatas = async function(item,internal,nester){return await transformDatas(item,internal,nester);}
 
 function filterByDate(item){

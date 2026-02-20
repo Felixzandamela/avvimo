@@ -147,11 +147,13 @@ admin.get("/users/delete/:_id", urlencodedParser, async (req,res)=>{
     res.status(200).redirect(results.redirect);
   }
 });
-admin.get("/users/edit-profile", urlencodedParser, async(req,res)=>{
+admin.get("/users/:action", urlencodedParser, async(req,res)=>{
   const {_id} = req.query;
-  const item = await Actions.get("users",_id);
-  if(item){
-    res.render("cabinet/admin-edit-profile", {item:item});
+  const action = req.params.action;
+  let results = await Actions.get("users",_id);
+  if(results){
+    let item = action === "profile-view"? await transformDatas(results,true); : results;
+    res.render(`cabinet/${action}`, {item:item});
   }else{
     const data = {
       texts:`Este usuarío com id ${_id} está indisponível. Por favor tente mais tarde`,
