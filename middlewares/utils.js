@@ -254,7 +254,7 @@ const transformDatas = async function(obj, internal, sObj) {
   const mergedObj = shouldMerg?  objRevised(obj, sObj) : obj;
   const result = {};
   for (const key in mergedObj) {
-    if (typeof mergedObj[key] === 'object' && !Array.isArray(mergedObj[key] && key !== "_id")) {
+    if (typeof mergedObj[key] === 'object' && !Array.isArray(mergedObj[key]) && key !== "_id") {
       result[key] = transformObject(mergedObj[key], internal);
     } else {
       }else if (key === 'newpassword') {
