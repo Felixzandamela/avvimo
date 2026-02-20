@@ -257,7 +257,7 @@ const transformDatas = async function(obj, internal, sObj) {
     if (typeof mergedObj[key] === 'object' && !Array.isArray(mergedObj[key]) && key !== "_id") {
       result[key] = transformObject(mergedObj[key], internal);
     } else {
-      }else if (key === 'newpassword') {
+      if (key === 'newpassword') {
         const password = await crypt(result[key]);
         result['password'] = defineValue(key, password, internal);
       } else {
