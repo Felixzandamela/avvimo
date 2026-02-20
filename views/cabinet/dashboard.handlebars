@@ -41,7 +41,7 @@
             </div>
             {{/if}}
         </header>
-         {{#if user.cronTodelete.fullDate}}
+         {{#if user.inDeleteQueue.status}}
           {{>_delete-account-warning}}
         {{/if}}
         <div class="padd5-a flex_wrap">
