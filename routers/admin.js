@@ -152,7 +152,7 @@ admin.get("/users/:action", urlencodedParser, async(req,res)=>{
   const action = req.params.action;
   let results = await Actions.get("users",_id);
   if(results){
-    let item = action === "profile-view"? await transformDatas(results,true); : results;
+    let item = action === "profile-view"? await transformDatas(results,true) : results;
     res.render(`cabinet/${action}`, {item:item});
   }else{
     const data = {
