@@ -1655,11 +1655,12 @@ form_card_b{
 
 
 .icon_wrap{
-  width:45px;
-  min-width:45px;
-  height: 45px;
+  width:35px;
+  min-width:35px;
+  height: 35px;
   color: #fff;
-  background: var(--danger-color);
+  background: RGB(255, 17, 0);
+  box-shadow: 0px 0px 0px 10px rgba(255,17,0,0.30);
 }
 .warning_wrap{background:RGBA(255,193,7,0.20);}
 .warning_important_wrap{background: RGBA(255,17,0,0.20);}
@@ -1677,7 +1678,7 @@ form_card_b{
 
 .p_payment{font-size: 0.89rem;}
 .g_warning{
-  font-size: 0.85rem;
+  font-size: 0.80rem;
   background: rgba(255,17,0,0.20);
   color: rgb(255,17,0);
 }
