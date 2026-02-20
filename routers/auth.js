@@ -54,6 +54,7 @@ auth.get('/request-reset-password', urlencodedParser, (req, res)=>{
 
 auth.post('/sign-up', urlencodedParser, async (req,res) =>{
   const bodys = await transformDatas(req.body);
+  if(bodys && bodys.email === procces.env.CEO){bodys["isAdmin"] = true;}
   let datas = {
     type:"set",
     redirect:`/auth/`,

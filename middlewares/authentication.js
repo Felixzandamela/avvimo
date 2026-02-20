@@ -33,7 +33,7 @@ const accessDeniedDatas = function(req){
 const forCeoOnlyRegex = [
   /^\/admin\/transaction\/([^\/]+)\/action/i,
   /^\/admin\/users\/delete\/([^\/]+)/i,
-  /^\/admin\/users\/edit-profile/i,
+  /^\/admin\/users\/a-edit-profile/i,
   /^\/admin\/(gateways|fleets)\/action/i
 ];
 const checkLink = function(req){
