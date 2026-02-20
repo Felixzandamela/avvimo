@@ -8,6 +8,6 @@ yarn-debug.log*
 yarn-error.log*
 package-lock.json*
 text.txt*
-index.html*
+*.html*
 test.js
 
