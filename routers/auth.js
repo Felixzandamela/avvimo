@@ -262,11 +262,10 @@ auth.post("/verifying-identity", urlencodedParser, async (req, res)=>{
     }
   }else{
     res.redirect("/auth/verifying-identity");
-   
   }
 });
 
-let tentativas = {};
+let attempts = {};
 auth.post('/login', urlencodedParser, (req, res, next) => {
   const redirectTo = storage.getItem("redirectTo");
   const go = !redirectTo ? "/cabinet/dashboard" : redirectTo;
@@ -280,15 +279,15 @@ auth.post('/login', urlencodedParser, (req, res, next) => {
   passport.authenticate("local", async (err, user, info) => {
     if(!user){
       if (info.message === "Senha incorrecta!") {
-        if (!tentativas[username]) {tentativas[username] = 1;} else {tentativas[username]++;}
-        if (tentativas[username] >= 3) {
-          // Enviar email de alerta
-          const currentAttemptor = await Actions.get("users",{email:username},null,true);
-          if(currentAttemptor){
-            const result = await Actions.update(currentAttemptor._id, datas, true);
+        if (!attempts[username]) {attempts[username] = 1;} else {attempts[username]++;}
+        if (attempts[username] >= 3) {
+          // send alert to account owner to alert about intruder
+          const intruder = await Actions.get("users",{email:username},null,true);
+          if(intruder){
+            const result = await Actions.update(intruder._id, datas, true);
             const datasForEmail = {
-              name: currentAttemptor.name,
-              email: currentAttemptor.email,
+              name: intruder.name,
+              email: intruder.email,
               agentDetails: extraInfos ? JSON.parse(extraInfos) : null
             }
             const send = await sendEmail(datasForEmail, "bruteForceAlert");
@@ -298,12 +297,12 @@ auth.post('/login', urlencodedParser, (req, res, next) => {
       }else{req.flash('error', info.message);}
       return res.redirect(`/auth/login`);
     }
-    // Login bem-sucedido
+    // Login successfull
     req.logIn(user, (err, info) => {
       if (err) {console.error(err);
         return res.redirect(`/auth/login`);
       }
-      tentativas[username] = 0;
+      attempts[username] = 0;
       return res.redirect(go);
     });
   })(req, res, next);

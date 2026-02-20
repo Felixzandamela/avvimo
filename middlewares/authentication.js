@@ -29,6 +29,7 @@ const accessDeniedDatas = function(req){
   }
 }
 
+// link to only ceo can navigate
 const forCeoOnlyRegex = [
   /^\/admin\/transaction\/([^\/]+)\/action/i,
   /^\/admin\/users\/delete\/([^\/]+)/i,
@@ -56,7 +57,7 @@ module.exports = {
       res.status(401).render('mains/cards-th', getText(req));
     }else if(req.user.bruteForce.active){
       storage.setItem("_id", req.user._id.toString());
-      storage.setItem("sendcode","");
+      storage.setItem("sendcode","true");
       res.redirect("/auth/verifying-identity");
     }else{return next();}
   },
@@ -68,7 +69,7 @@ module.exports = {
       res.render('mains/cards-th', getText(req));
     }else if(req.user.bruteForce.active){
       storage.setItem("_id", req.user._id.toString());
-      storage.setItem("sendcode","");
+      storage.setItem("sendcode","true");
       res.redirect("/auth/verifying-identity");
     }else if(!req.user.isAdmin){
       const send = await sendEmail(getCeo(req), "unauthorizedNavigator");

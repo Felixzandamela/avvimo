@@ -1750,9 +1750,9 @@ form_card_b{
 .row_body{
   padding:0 10px;
   position: relative;
-  color: var(--s-color);
   font-size: 0.83rem;
 }
+.a_col_sc{color: var(--s-color);}
 .a_col.user{width: 100%!important;}
 
 .a_col_status, .a_col_50{

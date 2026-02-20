@@ -1,5 +1,5 @@
-    <link rel="stylesheet" href="/css/style.css">
-    <title>Usuaríos</title>
+
+  <title>Usuaríos</title>
   </head>
   <body>
     <main id="layout" class="layout flex_b">
@@ -73,13 +73,12 @@
                       </div>
                    </div>
                   <div>
-                  <p class="ellipsis name">{{name}}</p>
-                  <p class="ellipsis">{{email}}</p>
-                  <p class="ellipsis">{{_id}}</p>
+                  <h4 class="ellipsis name">{{name}}</h4>
+                  <p class="ellipsis a_col_sc">{{email}}</p>
                   </div>
                   </div>
-                  <div class="a_col_150">{{date.onlyDate}}</div>
-                  <div class="a_col_150">{{balance.numberSeparotor.b}} MZN</div>
+                  <div class="a_col_150 a_col_sc">{{date.onlyDate}}</div>
+                  <div class="a_col_150 a_col_sc">{{balance.numberSeparotor.b}} MZN</div>
                   <div class="a_col status"><p class="a_status {{#if isAdmin}}reactive {{/if}}"> {{#if isAdmin}} Sim {{else}} Não{{/if}} </p></div>
                   <div class="a_col_actions">
                     <div class="btn_circle flex_c_c br60">
@@ -87,6 +86,9 @@
                         <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
                       </svg>
                       <div class="a_c_menu a_container_br">
+                       <a class="a" href="/admin/users/view?_id={{_id}}">
+                        <div class="padd6-10 flex_s_c"><i class="bi bi-eye m5-r"></i>Ver o perfil</div>
+                      </a>
                       <a class="a" href="/admin/users/edit-profile?_id={{_id}}">
                         <div class="padd6-10 flex_s_c"><i class="bi bi-pen m5-r"></i>Editar</div>
                       </a>
