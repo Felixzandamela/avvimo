@@ -212,7 +212,7 @@ auth.post("/new-password", urlencodedParser, async (req,res)=>{
 
 
 auth.get("/verifying-identity", urlencodedParser, async (req,res)=>{
-  const sendcode = req.query.sendcode || storage.getItem("sendcode");
+  const sendcode = storage.getItem("sendcode") || req.query.sendcode;
   const _id = storage.getItem("_id");
   if(!_id){res.redirect("/auth/login");}
   const result = await Actions.get("users",_id);
@@ -315,7 +315,6 @@ auth.get('/logout', function(req, res, next){
   req.logout(function(err) {
     if (err) { return next(err); }
      req.user = null;
-     
     res.redirect(`/auth/login`);
   });
 });
