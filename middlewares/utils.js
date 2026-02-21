@@ -248,7 +248,8 @@ const defineValue = function(key,value,internal){
 
 const transformDatas = async function(obj, internal, sObj) {
   if (typeof obj !== 'object' || sObj && typeof sObj !== 'object') {
-    throw new Error('obj e sObj devem ser objetos');
+    console.log('obj e sObj devem ser objetos');
+    return;
   }
   const shouldMerg = typeof sObj === "object";
   const mergedObj = shouldMerg?  objRevised(obj, sObj) : obj;
