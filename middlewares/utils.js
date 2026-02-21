@@ -253,8 +253,9 @@ const transformDatas = async function(obj, internal, sObj) {
   const shouldMerg = typeof sObj === "object";
   const mergedObj = shouldMerg?  objRevised(obj, sObj) : obj;
   const result = {};
+  const ignoreKeys = /^(owner|fleet|gateway|_id)$/i;
   for (const key in mergedObj) {
-    if (typeof mergedObj[key] === 'object' && !Array.isArray(mergedObj[key]) && key !== "_id") {
+    if (typeof mergedObj[key] === 'object' && !Array.isArray(mergedObj[key]) && !ignoreKeys.test(key)) {
       result[key] = transformObject(mergedObj[key], internal);
     } else {
       if (key === 'newpassword') {
