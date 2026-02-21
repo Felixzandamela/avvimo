@@ -2,11 +2,13 @@
   <div class="card_popup a_container">
   <div class="modal_header padd15-a flex_b_c">
     <div class="flex_s_c modal">
+      <div class="avatar flex_c_c"><
       {{#if owner.src}}
-      <img class="br60 avatar" src="{{owner.src}}" alt="avatar"/>
+      <img class="br60" src="{{owner.src}}" alt="avatar"/>
       {{else}}
         {{>_avatar}}
       {{/if}}
+      </div>
       <div class="left padd10-l">
         <h5 class="ellipsis">{{owner.name}}</h5>
         <div accesskey="{{stars.default}}" class="flex_s card_stars"></div>

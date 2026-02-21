@@ -212,7 +212,7 @@ auth.post("/new-password", urlencodedParser, async (req,res)=>{
 
 
 auth.get("/verifying-identity", urlencodedParser, async (req,res)=>{
-  const sendcode = storage.getItem("sendcode") || req.query.sendcode;
+  const sendcode = req.query.sendcode;
   const _id = storage.getItem("_id");
   if(!_id){res.redirect("/auth/login");}
   const result = await Actions.get("users",_id);
@@ -221,7 +221,6 @@ auth.get("/verifying-identity", urlencodedParser, async (req,res)=>{
       result.bruteForce.rescue = true;
       result.save().then(async (user)=>{
         const send = await sendEmail(user, "verifyingIdentity");
-        storage.setItem("sendcode","");
         res.render("auth/verifyingIdentity",{_id:_id});
       }).catch((error)=>{
         console.error(error);

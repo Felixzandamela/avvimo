@@ -96,6 +96,38 @@
                       <div class="valueToCopy">{{user._id}}</div>
                   </div>
                 </div>
+            <div class="flex_s a_activity create">
+                  <div class="flex_c_c a_activity_icon br60"><i class="bi bi-person-hearts"></i></div>
+                  <div style="width:100%;" class="flex_b">
+                  <div class="">
+                    <p>Upline</p>
+                    <div class="a_activity_p flex_b_c">
+                      <div>{{#if user.upline}}{{user.upline}}{{else}}Sem upline{{/if}}</div>
+                    </div>
+                  </div>
+                  {{#if user.upline}}
+                  <div class="btn_copy copyBtn btn_circle br60 flex_c_c">
+                        <i id="iconCopy"  class="bi bi-copy"></i>
+                      </div>
+                      <div class="valueToCopy">{{user.upline}}</div>
+                      {{/if}}
+                  </div>
+                </div>
+                <div class="flex_s a_activity approve">
+                  <div class="flex_c_c a_activity_icon br60"><i class="bi bi-person-check"></i></div>
+                  <div class="">
+                    <p>Conta verificado</p>
+                    <div class="a_activity_p">{{#if user.verified}}Sim{{else}}Não{{/if}}</div>
+                  </div>
+                </div>
+                <div class="flex_s a_activity delete">
+                  <div class="flex_c_c a_activity_icon br60"> <i class="bi bi-calendar4-event"></i> </div>
+                  <div class="">
+                    <p>Agendado pra deletar</p>
+                    <div class="a_activity_p">{{#if user.inDeleteQueue.status}}{{user.inDeleteQueue.date.fullDate}}{{else}}Não{{/if}}</div>
+                  </div>
+                </div>
+          
           </div>
         </div>   
         <div class="a_prof_box">
