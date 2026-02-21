@@ -1,11 +1,11 @@
-    <link rel="stylesheet" href="/public/css/style.css">
+
     <title>Editar perfil</title>
   </head>
   <body>
     <main id="layout" class="layout flex_b">
-    <!-- {{>_aside}}-->
+     {{>_aside}}
       <section class="a_sec">
-        <!--{{>_layout-nav}}-->
+        {{>_layout-nav}}
         <div class="main_wrap">
          <div class="mr5-a flex_c_c padd10-a">
           <form action="/admin/users/edit-profile?_id={{item._id}}" method="post" id="form" class="flex_b a_form_container br30  a_container" accept-charset="utf-8">
@@ -35,6 +35,8 @@
           <div class="a_balance-card padd10-tb">
             <div class="title">Saldo disponível</div>
             <p>MZN {{item.balance.numberSeparotor.b}}</p>
+            <div class="title">Total ganhos</div>
+            <h3>{{item.earned.numberSeparotor.b}}</h3>
           </div>
         </div>
          </div>
@@ -82,39 +84,41 @@
                   </div>
                 </div>
                 <div class="flex_s a_activity create">
-                  <div class="flex_c_c a_activity_icon br60"><i class="bi bi-person"></i></div>
+                  <div class="flex_c_c a_activity_icon br60"><i class="bi bi-person-hearts"></i></div>
                   <div style="width:100%;" class="flex_b">
                   <div class="">
                     <p>Upline</p>
                     <div class="a_activity_p flex_b_c">
-                      <div>{{item.upline}}</div>
+                      <div>{{#if item.upline}}{{item.upline}}{{else}}Sem upline{{/if}}</div>
                     </div>
                   </div>
+                  {{#if item.upline}}
                   <div class="btn_copy copyBtn btn_circle br60 flex_c_c">
                         <i id="iconCopy"  class="bi bi-copy"></i>
                       </div>
-                      <div class="valueToCopy">{{item._id}}</div>
+                      <div class="valueToCopy">{{item.upline}}</div>
+                      {{/if}}
                   </div>
                 </div>
-                 <div class="flex_s a_activity delete">
-                  <div class="flex_c_c a_activity_icon br60"><i class="bi bi-calendar2-date"></i></div>
+                 <div class="flex_s a_activity system">
+                  <div class="flex_c_c a_activity_icon br60"><i class="bi bi-nintendo-switch"></i></div>
                   <div class="">
                     <p>Admin</p>
                     <div class="a_activity_p">{{#if item.isAdmin}}Sim{{else}}Não{{/if}}</div>
                   </div>
                 </div>
-                <div class="flex_s a_activity delete">
-                  <div class="flex_c_c a_activity_icon br60"><i class="bi bi-calendar2-date"></i></div>
+                <div class="flex_s a_activity approve">
+                  <div class="flex_c_c a_activity_icon br60"><i class="bi bi-person-check"></i></div>
                   <div class="">
                     <p>Conta verificado</p>
                     <div class="a_activity_p">{{#if item.verified}}Sim{{else}}Não{{/if}}</div>
                   </div>
                 </div>
                 <div class="flex_s a_activity delete">
-                  <div class="flex_c_c a_activity_icon br60"><i class="bi bi-calendar2-date"></i></div>
+                  <div class="flex_c_c a_activity_icon br60"> <i class="bi bi-calendar4-event"></i> </div>
                   <div class="">
-                    <p>Admin</p>
-                    <div class="a_activity_p">{{#if item.isAdmin}}Sim{{else}}Não{{/if}}</div>
+                    <p>Agendado pra deletar</p>
+                    <div class="a_activity_p">{{#if item.inDeleteQueue.status}}{{item.inDeleteQueue.date.fullDate}}{{else}}Não{{/if}}</div>
                   </div>
                 </div>
           </div>
@@ -126,7 +130,7 @@
         </div>
         <script type="text/javascript" src="/js/gre.js"></script>
       </section>
-        <!--{{>_profile}}-->
+        {{>_profile}}
       <script type="text/javascript" src="/js/layout.js"></script>
     </main>
   </body>
