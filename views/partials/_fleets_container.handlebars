@@ -27,16 +27,16 @@
           {{#if admin}}
            <div class="flex_b padd5-tb">
             <div>Deposítos:</div> 
-            <p>{{deposits.total}}<span></span></p>
+            <p>{{deposits.total.numberSeparotor.b}}<span></span></p>
           </div>
           
            <div class="flex_b padd5-tb">
             <div>Total deposítado:</div> 
-            <p>{{deposits.amount}}<span>MZN</span></p>
+            <p>{{deposits.amount.numberSeparotor.b}}<span>MZN</span></p>
           </div>
           <div class="flex_b padd5-tb">
             <div>percentagem:</div> 
-            <p>{{percentages.amount}}<sup>%</sup></p>
+            <p>{{percentages.amount.default}}<sup>%</sup></p>
           </div>
             <div class="flex_wrap f-admin-btns padd10-tb">
               <a href="/admin/fleets/action?type=update&_id={{_id}}" class="a m5-r">
