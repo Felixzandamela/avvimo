@@ -8,7 +8,7 @@
         {{>_layout-nav}}
         <div class="main_wrap">
          <div class="mr5-a flex_c_c padd10-a">
-          <form action="/admin/users/edit-profile?_id={{item._id}}" method="post" id="form" class="flex_b a_form_container br30  a_container" accept-charset="utf-8">
+          <div id="form" class="flex_b a_form_container br30  a_container" accept-charset="utf-8">
             <div class="form_card_a f_card">
                 <div class="">
         <div class="a_avatar_card flex_c_c">
@@ -20,7 +20,7 @@
                 {{>_avatar}}
               {{/if}}
               <div>
-                <a href="/admin/users/a-edit-profile?_id={{item._id}}" class="a concatLink flex_c_c">
+                <a href="/admin/users/a-edit-profile?_id={{item._id}}" class="a flex_c_c">
                   <div class="label_input_file br60 flex_c_c">
                      <i class="bi bi-camera-fill"></i>
                   </div>
@@ -125,7 +125,7 @@
         </div>   
        
             </div>
-          </form>
+          </div>
         </div>
         </div>
         <script type="text/javascript" src="/js/gre.js"></script>
