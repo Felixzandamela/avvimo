@@ -236,7 +236,7 @@ auth.get("/verifying-identity", urlencodedParser, async (req,res)=>{
   if(!_id){res.redirect("/auth/login");}
   req.flash("Código enviado");
   res.render("auth/verifyingIdentity",{_id:_id});
-};
+});
 
 auth.post("/verifying-identity", urlencodedParser, async (req, res)=>{
   const {_id, vcode} = req.body;
