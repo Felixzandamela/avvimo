@@ -214,7 +214,7 @@ auth.post("/new-password", urlencodedParser, async (req,res)=>{
 });
 
 
-auth.get("/requet-verifying-code", urlencodedParser, async (req,res)=>{
+auth.get("/request-verify-code",  async (req,res)=>{
   const _id = storage.getItem("_id");
   if(!_id){res.redirect("/auth/login");}
   const result = await Actions.get("users",_id);
@@ -222,7 +222,7 @@ auth.get("/requet-verifying-code", urlencodedParser, async (req,res)=>{
     result.bruteForce.rescue = true;
     result.save().then(async (user)=>{
       const send = await sendEmail(user, "verifyingIdentity");
-      res.redirect(302, "/auth/verifying-identity");
+      res.redirect("/auth/verifying-identity");
     }).catch((error)=>{
       console.error(error);
       res.status(404).render("mains/cards-th",alertDatas);
@@ -235,7 +235,7 @@ auth.get("/verifying-identity", urlencodedParser, async (req,res)=>{
   const _id = storage.getItem("_id");
   if(!_id){res.redirect("/auth/login");}
   req.flash("Código enviado");
-  res.render("auth/verifyingIdentity",{_id:_id});
+  res.render("auth/verifyingIdentity",{_id:_id,quote:quote()});
 });
 
 auth.post("/verifying-identity", urlencodedParser, async (req, res)=>{
