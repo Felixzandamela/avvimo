@@ -27,12 +27,11 @@ function check(input, type, index){
       return input.length < 50 || input.length > 500 ? {msg:"A texto não pode der menos de 50 ou mais de 500 caracteres!", index:index}: null;
     break;
     case "vcode":
-      return input.length !== 6 {msg:"O código deve ter 6 digítos", index:index} : null;
+      return input.length !== 6 ? {msg:"O código deve ter 6 digítos", index:index} : null;
     break;
     default: 
     return null;
   }
-
 }
 
 const submitBtn  = document.querySelector("#submitBtn");
