@@ -52,7 +52,6 @@ module.exports.noReplyOptions = async function(item, type){
       template: 'emails/code'
     }
   }
-  console.log(item.bruteForce)
   return{
     from: ''+companyName+'"no-replay@avvimo.com"', // sender address
     to: item.email,

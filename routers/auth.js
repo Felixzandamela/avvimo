@@ -218,7 +218,7 @@ auth.get("/request-verify-code",  async (req,res)=>{
   const _id = storage.getItem("_id");
   if(!_id){res.redirect("/auth/login");}
   const result = await Actions.get("users",_id);
-  if(result.type === "success"){
+  if(result){
     result.bruteForce.rescue = true;
     result.save().then(async (user)=>{
       const send = await sendEmail(user, "verifyingIdentity");
@@ -227,11 +227,13 @@ auth.get("/request-verify-code",  async (req,res)=>{
       console.error(error);
       res.status(404).render("mains/cards-th",alertDatas);
     });
-    const _alertObj = objRevised(alertDatas,{texts: result.text,redirectTo:"/auth/login"});
-  }else{res.status(404).render("mains/cards-th",_alertObj);}
+  }else{
+    const _alertObj = objRevised(alertDatas,{texts: "Este usuarío não está disponível",redirectTo:"/auth/login"});
+    res.status(404).render("mains/cards-th",_alertObj);
+  }
 });
 
-auth.get("/verifying-identity", urlencodedParser, async (req,res)=>{
+auth.get("/verifying-identity",  async (req,res)=>{
   const _id = storage.getItem("_id");
   if(!_id){res.redirect("/auth/login");}
   req.flash("Código enviado");
@@ -247,7 +249,7 @@ auth.post("/verifying-identity", urlencodedParser, async (req, res)=>{
     data:{bruteForce:{active:false,rescue:false}}
   }
   const result = await Actions.get("users", _id);
-  if(result.type === "success"){
+  if(result){
     const {date, code, rescue, active} = result.bruteForce;
     let msg = null;
     if(formatDate(date).minutesLength >= 15 || vcode !== code){
@@ -268,7 +270,7 @@ auth.post("/verifying-identity", urlencodedParser, async (req, res)=>{
       }
     }
   }else{
-    req.flash("error", result.text);
+    req.flash("error", "Este usuarío não está disponível");
     res.redirect("/auth/login");
   }
 });
