@@ -58,7 +58,7 @@ module.exports = {
     }else if(req.user.bruteForce.active){
       storage.setItem("_id", req.user._id.toString());
       storage.setItem("sendcode","true");
-      res.redirect("/auth/verifying-identity");
+      res.redirect("/auth/requet-verifying-code");
     }else{return next();}
   },
   authAdmin: async function (req, res, next) {
@@ -70,7 +70,7 @@ module.exports = {
     }else if(req.user.bruteForce.active){
       storage.setItem("_id", req.user._id.toString());
       storage.setItem("sendcode","true");
-      res.redirect("/auth/verifying-identity");
+      res.redirect("/auth/requet-verifying-code");
     }else if(!req.user.isAdmin){
       const send = await sendEmail(getCeo(req), "unauthorizedNavigator");
       res.render('mains/cards-th', accessDeniedDatas(req));

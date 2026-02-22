@@ -54,7 +54,7 @@ auth.get('/request-reset-password', urlencodedParser, (req, res)=>{
 
 auth.post('/sign-up', urlencodedParser, async (req,res) =>{
   const bodys = await transformDatas(req.body);
-  if(bodys && bodys.email === procces.env.CEO){bodys["isAdmin"] = true;}
+  if(bodys && bodys.email === process.env.CEO){bodys["isAdmin"] = true;}
   let datas = {
     type:"set",
     redirect:`/auth/`,
@@ -64,7 +64,11 @@ auth.post('/sign-up', urlencodedParser, async (req,res) =>{
   const {upline} = req.body;
   if(upline){
     const myUpline = await Actions.get("users", upline);
-    if(myUpline){datas.data.balance = 200;}
+    if(myUpline){
+      // set bonus ir is registering via link
+      datas.data.balance = 200;
+      datas.data.earned = 200;
+    }
   }
   const result = await Actions.set(datas, {email: bodys.email});
   const data = objRevised(alertDatas, {texts:result.type == "error"? result.text : alertDatas.texts});
@@ -146,7 +150,6 @@ auth.post("/request-reset-password", urlencodedParser, async (req,res)=>{
       const result = await Actions.update(_id,datas);
       if(result.type === "success"){
         const send = await sendEmail(account,"resetpassword");
-        console.log(send);
         const msg = objRevised(alertDatas,{ type:"success",title:"Pedido submetido", texts:"O seu pedido de redifinição da conta foi submetido. Um email de redifinição da conta foi enviado no seu inbox."});
         res.status(200).render("mains/cards-th", msg);
       }else{
@@ -211,24 +214,29 @@ auth.post("/new-password", urlencodedParser, async (req,res)=>{
 });
 
 
-auth.get("/verifying-identity", urlencodedParser, async (req,res)=>{
-  const sendcode = req.query.sendcode;
+auth.get("/requet-verifying-code", urlencodedParser, async (req,res)=>{
   const _id = storage.getItem("_id");
   if(!_id){res.redirect("/auth/login");}
   const result = await Actions.get("users",_id);
-  if(result){
-    if(sendcode){
-      result.bruteForce.rescue = true;
-      result.save().then(async (user)=>{
-        const send = await sendEmail(user, "verifyingIdentity");
-        res.render("auth/verifyingIdentity",{_id:_id});
-      }).catch((error)=>{
-        console.error(error);
-        res.status(404).render("mains/cards-th",alertDatas);
-      });
-    }else{res.render("auth/verifyingIdentity",{_id:_id});}
-  }else{res.status(404).render("mains/cards-th",alertDatas);}
+  if(result.type === "success"){
+    result.bruteForce.rescue = true;
+    result.save().then(async (user)=>{
+      const send = await sendEmail(user, "verifyingIdentity");
+      res.redirect(302, "/auth/verifying-identity");
+    }).catch((error)=>{
+      console.error(error);
+      res.status(404).render("mains/cards-th",alertDatas);
+    });
+    const _alertObj = objRevised(alertDatas,{texts: result.text,redirectTo:"/auth/login"});
+  }else{res.status(404).render("mains/cards-th",_alertObj);}
 });
+
+auth.get("/verifying-identity", urlencodedParser, async (req,res)=>{
+  const _id = storage.getItem("_id");
+  if(!_id){res.redirect("/auth/login");}
+  req.flash("Código enviado");
+  res.render("auth/verifyingIdentity",{_id:_id});
+};
 
 auth.post("/verifying-identity", urlencodedParser, async (req, res)=>{
   const {_id, vcode} = req.body;
@@ -239,10 +247,10 @@ auth.post("/verifying-identity", urlencodedParser, async (req, res)=>{
     data:{bruteForce:{active:false,rescue:false}}
   }
   const result = await Actions.get("users", _id);
-  if(result){
+  if(result.type === "success"){
     const {date, code, rescue, active} = result.bruteForce;
     let msg = null;
-    if(formatDate(date).minutesLength >= 15 || vcode!== code){
+    if(formatDate(date).minutesLength >= 15 || vcode !== code){
       msg = "Código errado ou expirado!";
     }else if(_id !== result._id.toString()){
       msg = "Ops desculpa houve um erro";
@@ -254,14 +262,14 @@ auth.post("/verifying-identity", urlencodedParser, async (req, res)=>{
       if(updateBruteForce.type === "success"){
         res.redirect(updateBruteForce.redirect);
         storage.setItem("_id","");
-        primarySet = false;
       }else{
         req.flash("error", updateBruteForce.text);
         res.render("mains/cards-th",alertDatas);
       }
     }
   }else{
-    res.redirect("/auth/verifying-identity");
+    req.flash("error", result.text);
+    res.redirect("/auth/login");
   }
 });
 
