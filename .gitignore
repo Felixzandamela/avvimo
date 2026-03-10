@@ -9,5 +9,6 @@ yarn-error.log*
 package-lock.json*
 text.txt*
 *.html*
-test.js
+test.js*
+untitled.js
 
