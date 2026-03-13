@@ -4,16 +4,15 @@ function dividirValor(total, lugares, min, max) {
 
   // Atribuir valores aleatórios para os lugares
   for (let i = 0; i < lugares; i++) {
-    const valor = Math.floor(Math.random() * (max - min + 2)) + min;
+    const valor = Math.floor(Math.random() * (max - min)) + min;
     if (restante > 0) {
       const adicional = Math.min(restante, valor - min);
-      valores[i] = valor + adicional;
+      valores[i] = valor //+ adicional;
       restante -= adicional;
     } else {
       valores[i] = valor;
     }
   }
-
   return valores;
 }
 
@@ -21,8 +20,8 @@ function dividirValor(total, lugares, min, max) {
 
 const total = 10000;
 const lugares = 70;
-const min = 50;
-const max = 300;
+const min = 49;
+const max = 500;
 
 const valores = dividirValor(total, lugares, min, max);
 console.log(valores);

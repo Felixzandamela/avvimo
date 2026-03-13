@@ -255,16 +255,16 @@ const transformDatas = async function(obj, internal, sObj) {
   const mergedObj = shouldMerg?  objRevised(obj, sObj) : obj;
   const result = {};
   const ignoreKeys = /^(owner|fleet|gateway|_id|upline)$/i;
-  for (const key in mergedObj) {
-    if (typeof mergedObj[key] === 'object' && !Array.isArray(mergedObj[key]) && !ignoreKeys.test(key)) {
+  for(const key in mergedObj){
+    if(typeof mergedObj[key] === 'object' && !Array.isArray(mergedObj[key]) && !ignoreKeys.test(key)){
       result[key] = transformObject(mergedObj[key], internal);
-    } else {
-      if (key === 'newpassword') {
+    }else{
+      if(key === 'newpassword') {
         const password = await crypt(mergedObj[key]);
         result['password'] = defineValue(key, password, internal);
-      } else {
+      }else{
         result[key] = defineValue(key, mergedObj[key], internal);
-        if (!result[key] && !internal) delete result[key];
+        if(result[key] === "" && !internal) delete result[key];
       }
     }
   }
