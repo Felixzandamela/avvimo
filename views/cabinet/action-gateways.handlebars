@@ -13,7 +13,7 @@
               <div class="input_card flex_c_c">
                 <div class="modal_avatar flex_c_c">
                   <div class="avatar br60 flex_c_c">
-                    <img id="src_img" src="{{item.src}}" class="br60" alt="img">
+                    <img id="src_img" src="{{#if item.src}}{{item.src}}{{else}}/imgs/avatar.png{{/if}}" class="br60" alt="gateway img"/>
                     {{>_cropper-img}}
                   </div>
                 </div>
@@ -49,7 +49,7 @@
      <div class="input_card">
       <div class="input_wrap br6-a flex_b_c">
         <input value="{{item.owner}}" class="input" id="owner"  name="owner" type="text"/>
-        <label for="name">Nome do proprietario</label>
+        <label for="name">Titular</label>
       </div>
       <div class="label_error"></div>
     </div>

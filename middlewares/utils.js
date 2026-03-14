@@ -263,8 +263,9 @@ const transformDatas = async function(obj, internal, sObj) {
         const password = await crypt(mergedObj[key]);
         result['password'] = defineValue(key, password, internal);
       }else{
-        result[key] = defineValue(key, mergedObj[key], internal);
-        if(result[key] === "" && !internal) delete result[key];
+        let value = defineValue(key, mergedObj[key], internal);
+        result[key] = typeof value === "string" && !internal? value.trim() : value;
+        if(result[key] === "" && !internal || result[key] === undefined && !internal) delete result[key];
       }
     }
   }

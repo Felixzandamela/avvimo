@@ -467,6 +467,7 @@ input::placeholder{color: var(--s-color);}
   color: #fff;
 }
 
+
 .a_aside{
   height: 100vh;
   top: 0;
@@ -1754,16 +1755,21 @@ form_card_b{
   position: relative;
   font-size: 0.83rem;
 }
+.row_body:hover{background: rgba(var(--main-color-rgba),0.10);}
 .a_col_sc{color: var(--s-color);}
 .a_col.user{width: 100%!important;}
 
-.a_col_status, .a_col_50{
+.a_col_status{
   max-width: 50px;
   min-width: 50px;
 }
 .theader .a_col, .row_body .a_col,.a_col_status, .a_col_60,.a_col_150{
   text-align: left;
   padding: 5px;
+}
+.a_col_60{
+  min-width:60px;
+  width: 60px;
 }
 .a_col_150{
   width: 140px;
@@ -1774,7 +1780,7 @@ form_card_b{
   width: 35px;
   position: relative;
 }
-.theader .a_col, .row_body .a_col{min-width:100px;}
+.theader .a_col, .row_body .a_col{min-widh:100px;}
 
 .row_body:last-child{border: none!important;}
 .a_table_avatar{
@@ -1793,9 +1799,39 @@ form_card_b{
   background: var(--border);
   width: max-content;
 }
-.a_status.reactive{
+.a_status.reactive, .isVerified.reactive{
   background: RGB(5, 226, 126);
   color: #fff;
+}
+.isVerified{
+  position: absolute;
+  right: -5px;
+  bottom: 0;
+  width: 13px;
+  min-width: 13px;
+  height: 13px;
+  background: var(--s-color);
+}
+
+.row_body:nth-child(-n+3) .a_c_menu{
+  top: 40px!important;
+  bottom: auto!important;
+}
+
+.row_body:nth-last-child(-n+4) .a_c_menu{
+  bottom: 40px!important;
+  top: auto;
+}
+
+.row_body:nth-child(-n+3) .a_c_menu:before {
+  top:-6px!important;
+  border-width:1.5px 0 0 1.5px!important;
+}
+
+.row_body:nth-last-child(-n+4) .a_c_menu:before{
+  border-width:0 1.5px 1.5px 0;
+  bottom: -6px;
+  top: auto;
 }
 
 @media screen and (min-width:1200px){

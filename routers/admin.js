@@ -24,9 +24,24 @@ const transTypes = {
   commissions:"Comiss"
 }
 
-admin.get('/', (req, res) => {
-  res.redirect("/admin/dashboard");
-});
+const textConfig = {
+  fields: {gateways: "metódo de pagamento",fleets: "frota"},
+  actions: {set: "Nova",update: "Atualizar"},
+  viewPrefix: "cabinet/action-"
+};
+
+const getFieldOptions = function(field, action, textConfig) {
+  if (!textConfig.fields[field] || !textConfig.actions[action]) {
+    console.warn("missing title fields");
+    return "";
+  }
+  return {
+    text: `${textConfig.actions[action]} ${textConfig.fields[field]}`,
+    view: `${textConfig.viewPrefix}${field}`
+  }
+}
+
+admin.get('/', (req, res) => {res.redirect("/admin/dashboard");});
 admin.get('/dashboard', async (req, res) => {
   const arryFields = ["deposits", "withdrawals", "commissions", "payouts", "users"];
   const renderCards = await performance(arryFields);
@@ -49,32 +64,17 @@ admin.get('/:collection/action', urlencodedParser, async (req, res) => {
   const collection = req.params.collection;
   let itemToUpdate;
   
-  if(type == "update"){
+  if(type === "update"){
     let item = await Actions.get(collection,_id);
     if(item){itemToUpdate = item;}
   }
-  const d = {
-    text:{
-      update:{
-        gateways:"Atualizar gateway",
-        fleets:"Atualizar frota"
-      },
-      set:{
-        gateways:"Nova gateway",
-        fleets: "Nova frota"
-      }
-    },
-    view:{
-      gateways:"cabinet/action-gateways",
-      fleets:"cabinet/action-fleets"
-    }
-  }
+  const d = getFieldOptions(collection, type, textConfig);
   const datas = {
     admin:true,
-    text:d.text[type][collection],
+    text:d.text,
     type:type,
     _id: _id,
-    view: d.view[collection],
+    view: d.view,
     item: itemToUpdate
   }
   if(type == "update" && !datas.item){
@@ -119,16 +119,21 @@ admin.post('/:collection/action', urlencodedParser,async (req, res) => {
 
 admin.get("/users", urlencodedParser, async(req,res)=>{
   const link = {path:`/admin/users`,queryString: req.query ? `${new URLSearchParams(req.query).toString()}` : ''};
-  const body = await transformDatas(req.query);
-  let querys = propertysLength(body) > 0 ? body : null;
-  let results = await Actions.get("users", querys);
-  
-  if(results){
-    for(let k in results){
-      results[k] = await transformDatas(results[k]._doc,true);
+  let extractedQuery = {};
+  for(let key in req.query){
+    if(key !== "page"){
+      if(req.query[key] !== "" || req.query[key]  !== undefined){
+        extractedQuery[key] = req.query[key].trim();
+      }
     }
+  }
+  const page = req.query.page ? parseInt(req.query.page) : 0;
+  const querys = await transformDatas(extractedQuery);
+  let results = await Actions.get("users", querys);
+  if(results){
+    for(let k in results){results[k] = await transformDatas(results[k]._doc,true);}
     results.sort(sortByDays);
-    const datas= (pagination(results,!body.page?0:body.page, link, false));
+    const datas= (pagination(results, page, link, false));
     res.render("cabinet/users", {datas:datas});
   }else{
     res.render("cabinet/users", {datas:null});

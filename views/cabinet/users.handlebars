@@ -9,7 +9,7 @@
         <div class="main_wrap">
           <header class="a_sec_header padd5-lr">
             <div class="a_sec_header_wrap flex_b_c">
-              <h1 class="page-title">Usuaríos</h1>
+              <h1 class="page-title">Usuaríos ({{datas.pageDetails.total}})</h1>
               <div  class="flex_b_c">
                 <form class="flex_wrap a_selection_wrap" method="get" action="/admin/users">
                 <input type="hidden" name="page" value="0"/>
@@ -34,7 +34,7 @@
                   </div>
                 </div>
                 {{>_userStatus}}
-                 {{>_dateStatus}}
+                 {{>_verifiedStatus}}
               <div class="padd5-a a_selection last">
                 <button class="br6-a go primary-btn"><i class="bi bi-filter"></i></button>
               </div>
@@ -50,7 +50,7 @@
                 <div class="a_col user">Usuário</div>
                 <div class="a_col_150">Data</div>
                  <div class="a_col_150">Saldo</div>
-                <div class="a_col status">Admin</div>
+                <div class="a_col_60">Admin</div>
                 <div class="a_col_actions"></div>
               </div>
               <div class="tbody">
@@ -66,10 +66,10 @@
                     {{else}}
                       {{>_avatar}}
                     {{/if}}
-                    
                     {{#if isBanned}}
                       <div class="isBanned br60 flex_c_c"><i class="bi bi-exclamation"></i></div>
-                      {{/if}}
+                    {{/if}}
+                    <div class="isVerified {{#if verified}}reactive{{/if}} br60 flex_c_c"><i class="bi bi-check"></i></div>
                       </div>
                    </div>
                   <div>
@@ -79,7 +79,7 @@
                   </div>
                   <div class="a_col_150 a_col_sc">{{date.onlyDate}}</div>
                   <div class="a_col_150 a_col_sc">{{balance.numberSeparotor.b}} MZN</div>
-                  <div class="a_col status"><p class="a_status {{#if isAdmin}}reactive {{/if}}"> {{#if isAdmin}} Sim {{else}} Não{{/if}} </p></div>
+                  <div class="a_col_60"><p class="a_status {{#if isAdmin}}reactive {{/if}} br4-a"> {{#if isAdmin}} Sim {{else}} Não{{/if}} </p></div>
                   <div class="a_col_actions">
                     <div class="btn_circle flex_c_c br60">
                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
