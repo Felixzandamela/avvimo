@@ -433,7 +433,7 @@ const compareMonthsDatas = function(datas,type){
   const [previous] = datas.slice(-2);
   const [current] = datas.slice(-1);
   return{
-    title: current > previous ? "Bravo! 👏": "Vamos trabalhar! 💪",
+    title: current > previous ? "Bravo! 👏": "Mão na massa! 💪",
     text: current > previous ? `Parabéns, mais ${collections[type].title[1]} que mês passado` : "Este mês ainda estamos baixo que mês passado"
   }
 }
