@@ -297,26 +297,31 @@ const setTemplate = function(text, user) {
 }
 
 
-admin.post("/e-mails/send-new", urlencodedParser, async (req,res)=>{
-  const {name,value,subject,emailText} = req.body;
-  const regexQuery = /^(all|notMadeDeposit|madeDeposit)$/i;
-  const query = name && regexQuery.test(name) ? value : name === "email" ?  {email: { $in: value.split(",")}} : {[name]: value};
-  let users = await getUsersToEmail(query);
-  
-  if(users){
-    users.forEach( async (user, index) => {
-      let currentUserToEmail = {
-        innerHtml : setTemplate(emailText, user),
-        subject : subject,
-        name: user.name,
-        email: user.email
+admin.post("/e-mails/send-new", urlencodedParser, async (req, res) => {
+  try {
+    const { name, value, subject, emailText } = req.body;
+    const regexQuery = /^(all|notMadeDeposit|madeDeposit)$/i;
+    const query = name && regexQuery.test(name) ? value : name === "email" ? { email: { $in: value.split(",") } } : { [name]: value };
+    let users = await getUsersToEmail(query);
+    if (users) {
+      for (let k = 0; k < users.length; k++) {
+        const user = users[k];
+        let currentUserToEmail = {
+          innerHtml: setTemplate(emailText, user),
+          subject: subject,
+          name: user.name,
+          email: user.email
+        }
+        const send = await sendEmail(currentUserToEmail, "customized");
       }
-      const send = await sendEmail(currentUserToEmail, "customized");
-    });
+      res.redirect("/admin/e-mails/send");
+    }
+  } catch (error) {
+    console.error(error);
+    req.flash("error", error);
+    res.redirect("/admin/e-mails/send");
   }
-  res.redirect("/admin/e-mails/send");
 });
-
 
 const cron = require('node-cron');
 
