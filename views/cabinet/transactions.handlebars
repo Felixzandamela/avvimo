@@ -1,15 +1,26 @@
-    <link rel="stylesheet" href="/css/style.css">
-    <title>{{title}}</title>
+  <title>{{title}}</title>
   </head>
   <body>
     <main id="layout" class="layout flex_b">
       {{>_aside}}
       <section class="a_sec">
-        {{>_layout-nav}}
+     {{>_layout-nav}}
         <div class="main_wrap">
-          <header class="a_sec_header padd5-lr">
-            <div class="a_sec_header_wrap flex_b_c">
-              <h1 class="page-title">{{title}}</h1>
+          <header class="a_sec_header">
+            <div class="a_container padd5-lr">
+            <h1 class="page-title">Transações({{datas.pageDetails.total}})</h1>
+            <div class="vertical_btns_card">
+              <div class="vertical_btns">
+              <div class="vertical_btns_wrap">
+                <a href="/{{mode}}/transactions/deposits" class="a vertical_btn"><div class="btn padd5-lr flex_c_c"><i class="bi bi-box-arrow-up m5-r"></i>Deposítos</div></a>
+                <a href="/{{mode}}/transactions/withdrawals" class="a vertical_btn"><div class="btn padd5-lr flex_c_c"><i class="bi bi-box-arrow-down m5-r"></i>Saques</div></a>
+                <a href="/{{mode}}/transactions/commissions" class="a vertical_btn"><div class="btn padd5-lr flex_c_c"><i class="bi bi-link-45deg m5-r"></i>Comições</div></a>
+              </div>
+              </div>
+            </div>
+            </div>
+            <div class="a_sec_header_wrap padd5-lr">
+               
               <div  class="flex_b_c">
                 <form class="flex_wrap a_selection_wrap" method="get" action="/{{mode}}/transactions/{{type}}">
                 <input type="hidden" name="page" value="0"/>
@@ -34,7 +45,8 @@
                     </div>
                   </div>
                 </div>
-                {{/if}}
+               
+               {{/if}}
                 {{>_transStatus}}
                 {{>_dateStatus}}
               <div class="padd5-a a_selection last">
@@ -43,8 +55,9 @@
             </form>
             {{#if isAdmin}}
              {{else}}
+             
             <div class="flex_c_c">
-              {{#if deposits}}
+              {{#if deposits}} 
               <a href="/cabinet/fleets" class="a plus-fixed">
                 <div class="primary-btn  padd8-15 br4-a flex_c_c"> <p class="">Depositar</p>
                 <div class="btn_plus flex_c_c">

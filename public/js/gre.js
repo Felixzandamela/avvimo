@@ -1,3 +1,6 @@
+const $ = document.querySelectorAll.bind(document);
+const avvimo =  Avvimo();
+
 function check(input, type, index){
   if(!input && !/^(phoneNumber|upline|stars)$/i.test(type)){ return {msg:"Este campo não pode estar vazio",index:index}}
   switch(type){
@@ -24,7 +27,7 @@ function check(input, type, index){
       return  parseFloat(input) <= 0 ? {msg: "Valor maxímo inválido", index:index} : null;
     break;
     case "text":
-      return input.length < 50 || input.length > 500 ? {msg:"A texto não pode der menos de 50 ou mais de 500 caracteres!", index:index}: null;
+      return input.length < 50 || input.length > 500 ? {msg:"O texto não pode ter menos de 50 ou mais de 500 caracteres!", index:index}: null;
     break;
     case "vcode":
       return input.length !== 6 ? {msg:"O código deve ter 6 digítos", index:index} : null;
@@ -36,11 +39,10 @@ function check(input, type, index){
 
 const submitBtn  = document.querySelector("#submitBtn");
 submitBtn.addEventListener("click",()=>{
- const fields = [...document.querySelectorAll(".input")]
- const errors = [...document.querySelectorAll(".label_error")]
+ const fields = [...$(".input")];
  const empty = [], doubleA = [], doubleB = [];
   for(let k in fields){
-    if(fields[k].type == "hidden"){continue;
+    if(fields[k].type === "hidden"){continue;
     }else{
       const field = fields[k].type == "email" ? fields[k].type : fields[k].name;
       if(check(fields[k].value, field, k)){
@@ -93,42 +95,33 @@ submitBtn.addEventListener("click",()=>{
  }
   for(let y in empty){
     if(empty[y]){
-      errors[empty[y].index].innerHTML = empty[y].msg;
+      avvimo.setContent($(".label_error")[empty[y].index], empty[y].msg);
     }
   }
   if(empty.length === 0){
-    document.getElementById("min_loader").style.display = "flex";
-    document.getElementById("btnText").style.display = "none";
-    document.getElementById('submitBtn').disabled = true;
-    document.getElementById('form').submit();
+    avvimo.setStyle($("#min_loader")[0], {display: "flex"});
+    avvimo.setStyle($("#btnText")[0], {display : "none"});
+    avvimo.setAttributes($('#submitBtn')[0], {disabled: true});
+    $('#form')[0].submit();
  }  
 });
 function shakeStars(){
-  const t_stars = document.getElementById("t_stars");
-  t_stars.classList.add("shakes");
+  avvimo.setClass($("#t_stars")[0], "shakes");
   setTimeout(()=>{
-    t_stars.classList.remove("shakes");
+    avvimo.setClass($("#t_stars")[0], "shakes");
   },500);
 }
 
-var inputs = document.querySelectorAll(".input");
-var errors = document.querySelectorAll(".label_error");
-inputs.forEach((input, key)=>{
-  input.addEventListener("focus", ()=>{
-    errors[key].textContent = "";
-  });
+avvimo.addListener($(".input"), "focus", function(event, index){
+  avvimo.setContent($(".label_error")[index], "");
 });
 
 try{
-  let inputType = false;
-  if(document.querySelector(".password_eye")){
-    const passwordEye = document.querySelector(".password_eye");
-    passwordEye.addEventListener("click", () =>{
-      let togglePasswords = document.querySelectorAll('.password');
-      let pToggle = document.querySelector('#toggleEye');
-      inputType = !inputType;
-      togglePasswords.forEach(password=>{ password.setAttribute("type",  !inputType ? "password" : "text") });
-      pToggle.classList = !inputType ? "bi bi-eye": "bi bi-eye-slash";
+  if($(".password_eye").length > 0){
+    avvimo.addListener($(".password_eye")[0], "click", function(event, index){
+      let inputType = $(".password")[0].type === "password";
+      avvimo.setAttributes($(".password"), {type: !inputType ? "password" : "text"});
+      avvimo.setClass($("#toggleEye")[0],  !inputType ? "bi bi-eye": "bi bi-eye-slash");
     });
   }
 }catch(error){};
@@ -178,7 +171,7 @@ try{
 try{
   const  emojisExpressions = ["bi bi-emoji-neutral", "bi bi-emoji-frown", "bi bi-emoji-expressionless", "bi bi-emoji-smile", "bi bi-emoji-heart-eyes"];
   const colorsArray = ["red","orange", "lightblue","lightgreen","gold"];
-  if(document.querySelectorAll(".star")){
+  if(document.querySelector(".star")){
     const star = [...document.querySelectorAll(".new_star")];
     const stars = document.getElementById("stars");
     const init = parseInt(stars.value);
@@ -200,17 +193,49 @@ try{
       emoji.style.color = colorsArray[i];
     }
   }
+  
   if(document.querySelector(".reviewText")){
     const textarea = document.querySelector(".reviewText");
     const reviewLimitText = document.getElementById("reviewLimitText");
+    if(textarea.value.length > 1){
+       textarea.style.height = (textarea.scrollHeight) + "px"
+    }
     textarea.addEventListener("input",()=>{
     const {name,value}= textarea;
-    if(value.length >= 20){
-    }
-    reviewLimitText.textContent = `${value.length}/500`;
+    if(reviewLimitText){reviewLimitText.textContent = `${value.length}/500`;}
     textarea.style.height = 'auto';
     textarea.style.height = (textarea.scrollHeight) + 'px';
-  })
+  });
   }
   
 }catch(error){console.error(error)};
+
+try{
+  if($(".selectEmailers").length > 0){
+    avvimo.addListener($(".selectEmailers"), "click", function(event){
+      const target = event.target || event.currentTarget;
+      const {id, accessKey, textContent} = target;
+      $("#acname")[0].value = id;
+      $("#acvalue")[0].value = accessKey;
+      $("#prevalue")[0].value = textContent;
+    });
+  }
+  
+  // Para o input event
+  if($("#prevalue").length > 0){
+    avvimo.addListener($("#prevalue")[0], "input", function(event){
+      const {value} = event.target;
+      const emails = value && value.split(",");
+      const values = [];
+      for(let e = 0; e < emails.length; e++){
+        if(emails[e].trim().match(/^[a-zA-Z][a-zA-Z0-9\-\_\.]+@[a-zA-Z0-9]{2,}\.[a-zA-Z0-9]{2,}$/) && !values.includes(emails[e])){
+          values.push(emails[e].trim());
+        }
+      }
+      if(values.length > 0){
+        $("#acname")[0].value = "email";
+        $("#acvalue")[0].value = values.join(',');
+      }
+    });
+  }
+}catch(error){console.log(error)};

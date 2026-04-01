@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Avvimo</title>
-     <style type="text/css">
+    <style type="text/css">
     *{
       margin: 0; 
       padding: 0;
@@ -23,7 +23,6 @@
       max-width: 420px;
       background: #f6f7fd;
       height: max-content;
-      text-align: center;
     }
     .email-logo{
       color: #fff;
@@ -128,9 +127,6 @@
     .icon_l{
       padding:5px 5px 5px 0;
     }
-    .email-text a{
-      color:#316CFF;
-    }
   </style>
   </head>
   <body>
@@ -143,19 +139,21 @@
         </div>
       </div>
       <div class="body">
-        <h3 class="name">Olá {{name}}</h3>
-        <h2 class="email-title">Bem-vindo(a)</h2>
+        <img width="100%" src="{{baseLink}}/imgs/gen1.jpg"/>
+        <h3 class="email-title">Ola {{name}}!</h3>
         <div class="email-body">
-          <p class="email-text">Você recebeu este e-mail porque se registrou na {{companyName}} com o e-mail: {{email}}.</p>
-          <p class="email-text">Para concluir seu registro, confirme seu e-mail clicando no botão abaixo.</p>
-          <a class="" href="{{link}}" target="_blank">
-            <button class="btn-link primary-color">Confirmar email</button>
+          <p class="email-text">O que falta pra começar a ganhar sua renda extra?</p>
+          <p class="email-text">Aqui estão algumas ações que deve fazer:</p>
+          <div class="text_left">
+            <p class="email-text"><b>1:</b> Confirma a sua conta, se você ainda não confirmou;</p>
+            <p class="email-text"><b>2:</b> Faça um depósito e siga as instruções pra concluir o seu depósito;</p>
+            <p class="email-text"><b>3:</b> Compartilha o seu link para os seus amigos pra ganhar comissão;</p>
+            <p class="email-text"><b>4:</b> Sacar os seus fundos a qualquer momento que quiser;</p>
+            </div>
+             <a class="" href="{{link}}" target="_blank">
+            <button class="btn-link primary-color">Ver as novidades</button>
           </a>
-          <p class="email-text">
-            <a class="" href="{{link}}" target="_blank">{{link}}</a>
-          </p>
-          <p class="email-text">Se você não solicitou este evento, pode ignorar este e-mail.</p>
-          <p class="cordial-greetings">Obrigado, atenciosamente equipe {{companyName}}.</p>
+             <p class="cordial-greetings">Obrigado, atenciosamente equipe {{companyName}}.</p>
         </div>
       <footer>
         <div class="location">{{location}} </div>

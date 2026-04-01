@@ -201,7 +201,9 @@ cabinet.post("/newwithdraw", urlencodedParser, async (req,res)=>{
   }
 });
 
-
+cabinet.get("/transactions", (req,res)=>{
+  res.redirect(301, "/cabinet/transactions/deposits");
+});
 
 cabinet.get("/transactions/:type", urlencodedParser, async (req,res)=>{
   const type = req.params.type;

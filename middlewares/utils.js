@@ -347,26 +347,18 @@ module.exports.asideLinks = function(mode){
       link: `/${mode}/dashboard` ,
       icon: "bi bi-grid"
     },{
-      title: "Suporte",
-      link: `/${mode}/support`,
-      icon: "bi bi-headset"
-    },{
-      title: "Depósitos",
-      link: `/${mode}/transactions/deposits`,
-      icon: "bi bi-box-arrow-in-up"
-    },{
-      title: "Saques",
-      link: `/${mode}/transactions/withdrawals`,
-      icon: "bi bi-box-arrow-down"
-    },{
-      title: "Comicões",
-      link: `/${mode}/transactions/commissions`,
-      icon: "bi bi-link-45deg"
+      title: "Transações",
+      link: `/${mode}/transactions`,
+      icon: "bi bi-arrow-down-up"
     },{
       title: `Frotas`,
       link: `/${mode}/fleets`,
       icon: "bi bi-box"
-    }
+    },
+    {title: "Suporte",
+      link: `/${mode}/support`,
+      icon: "bi bi-headset"
+    },
   ];
   const adminAsideLinks = [
     {
@@ -381,10 +373,22 @@ module.exports.asideLinks = function(mode){
       title: "Criticas",
       link: "/admin/reviews",
       icon: "bi bi-chat-square-quote"
+    },{
+      title: "Emails",
+      link: "/admin/e-mails",
+      icon: "bi bi-envelope-at"
     }
   ];
   const asideLinks = mode !== "admin" ? defaultAsideLinks : [...defaultAsideLinks,...adminAsideLinks];
-  return asideLinks;
+  const keys = new Set();
+  for (let a of asideLinks) {
+    let link = a.link.split("/")[2];
+    keys.add(link);
+  }
+  return{
+    links: asideLinks,
+    fields: JSON.stringify([...keys])
+  } 
 }
 
 const ThisWeek = function(language) {

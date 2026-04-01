@@ -315,33 +315,26 @@ module.exports.Actions = (function () {
       }
     },
     
-    aggregate: async function(collection, match, field){
+    aggregate: async function(collection, options){
       if (!validCollection(collection)) {
         console.error('aggregate invalid collection:', collection);
-    return false;
-  }
-  if(typeof match !== "object"){
-    console.error('aggregate matchs undefined:', match, field);
-    return false
-  }
-  try{
-    const Model = collections[collection];
-    const result = await Model.aggregate([
-      { $match: match},
-      { $group: {
-        _id: "$fleet",
-        total: { $sum: field },
-      }}
-    ]).exec();
-    return result.reduce((acc, curr) => {
-      acc[curr._id] = curr.total;
-      return acc;
-    }, {});
-  } catch (error) {
-    console.error('aggregate error:', error);
-    return false;
-  }
+        return false;
+      }
+      if(!Array.isArray(options)){
+        console.error('aggregate options should be any Array:', typeof match, "is not array");
+        return false;
+      }
+      try{
+        const Model = collections[collection];
+        const result = await Model.aggregate(options).exec();
+        return result;
+      } catch (error) {
+        console.error('aggregate error:', error);
+        return false;
+      }
     },
+    
+    
     bestMembers: async function(){
       const Model = collections.users;
       const result = await Model.find().sort({ earned: -1 }).limit(10);

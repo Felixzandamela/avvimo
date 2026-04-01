@@ -2,13 +2,15 @@ const express = require("express");
 const admin = express.Router();
 const bodyParser = require('body-parser');
 const urlencodedParser = bodyParser.urlencoded({limit: '50mb', extended: true });
+const {sendEmail} = require('../middlewares/sendEmail');
 const {asideLinks,getTime,transformDatas,sortByDays, objRevised, statusIcons, propertysLength,msgsStatus, formatDate,cardDatas} = require('../middlewares/utils');
 const {pagination} = require('../middlewares/pagination');
-const {Actions} = require('../middlewares/action');
+const {Actions,db} = require('../middlewares/action');
 const {getFleets} = require("../middlewares/getFleets");
 const {getReviews} = require("../middlewares/getReviews");
 const {DepositsActions,CommissionsActions,WithdrawalsActions,getTransactions,getTransaction} = require("../middlewares/transactions-actions");
 const {performance} = require("../middlewares/performances");
+const {getUsersToEmail} = require("../middlewares/getUsersToEmail");
 
 const alertDatas = {
   type:"error",
@@ -207,6 +209,9 @@ admin.post("/reviews/update", urlencodedParser, async(req,res)=>{
   res.redirect(results.redirect);
 });
 
+admin.get("/transactions", (req,res)=>{
+  res.redirect(301, "/admin/transactions/deposits");
+});
 admin.get("/transactions/:type", urlencodedParser, async (req,res)=>{
   const type = req.params.type;
   const link = {path:`/admin/transactions/${type}`,queryString: req.query ? `${new URLSearchParams(req.query).toString()}` : ''};
@@ -255,6 +260,61 @@ admin.get("/support", (req,res)=>{
   const user = req.user;
   //const url = concatURl("support", `/?id=${user._id}&redirectedFrom=${req.headers.host}`);
  res.render("cabinet/chat", {id:user._id, mode:"admin"});
+});
+
+admin.get("/e-mails", (req,res)=>{
+  res.redirect(301, "/admin/e-mails/send");
+})
+
+admin.get("/e-mails/send", (req,res)=>{
+  res.render("cabinet/e-mails");
+});
+
+const setTemplate = function(text, user) {
+  let template = {
+    title: [],
+    links: [],
+    paragraphs: [],
+  };
+  const lines = text.split("\r\n");
+  lines.forEach(line => {
+    if (/\{name\}/gi.test(line)) {
+      const lineReplaced = line.replace(/\{name\}/gi, user?.name.split(" ")[0]);
+      template.title.push(lineReplaced);
+    }else{
+      const linkRegex = /(https?:\/\/[^\s]+|www\.[^\s]+|[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(?:\/[^\s]*)?)/g;
+      const parts = line.split(linkRegex);
+      parts.forEach((part) => {
+        if(part.match(linkRegex)){
+          template.links.push(part);
+        }else if(part !== ""){
+          template.paragraphs.push(part);
+        }
+      });
+    }
+  });
+  return template;
+}
+
+
+admin.post("/e-mails/send-new", urlencodedParser, async (req,res)=>{
+  const {name,value,subject,emailText} = req.body;
+  const regexQuery = /^(all|notMadeDeposit|madeDeposit)$/i;
+  const query = name && regexQuery.test(name) ? value : name === "email" ?  {email: { $in: value.split(",")}} : {[name]: value};
+  let users = await getUsersToEmail(query);
+  
+  if(users){
+    users.forEach( async (user, index) => {
+      let currentUserToEmail = {
+        innerHtml : setTemplate(emailText, user),
+        subject : subject,
+        name: user.name,
+        email: user.email
+      }
+      const send = await sendEmail(currentUserToEmail, "customized");
+    });
+  }
+  res.redirect("/admin/e-mails/send");
 });
 
 
@@ -307,4 +367,30 @@ cron.schedule('* * * * *', async () => {
     }
   }
 });
+
+
+cron.schedule('0 8 */1 * *', async () => {
+  if(process.env.ENV_TYPE === "production"){
+    const usersUnverified =  await getUsers({verified: false});
+    if(usersUnverified && Array.isArray(usersUnverified)){
+      for(let k = 0; k < usersUnverified.length; k++){
+        const user = usersUnverified[k];
+        if(!user.verified){
+          const send = await sendEmail(user, "verificarionAlert");
+        }
+      }
+    }
+    const usersNotMadeDeposit = await getUsersToEmail({isAdmin:true});
+    for (let user of usersNotMadeDeposit){
+      if(user.deposits){
+        if(user.deposits.length > 0){
+          const send = await sendEmail(user, "warningBan");
+        }else{
+          const send = await sendEmail(user, "depositNewsletter");
+        }
+      }
+    }
+  }
+});
+
 module.exports = admin;

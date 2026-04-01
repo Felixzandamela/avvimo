@@ -11,6 +11,11 @@ module.exports.noReplyOptions = async function(item, type){
       subject: "Verifique sua conta "+companyName,
       template: 'emails/account-verification'
     },
+    verificarionAlert:{
+      path: `${protocol}${baseUrl}/auth/account-verification?id=${item._id}`,
+      subject: "Verifique sua conta "+companyName,
+      template: 'emails/verificarionAlert'
+    },
     resetpassword:{
       path: `${protocol}${baseUrl}/auth/reset-password?token=${item._id}`,
       subject: "Você solicitou alteração da senha",
@@ -50,6 +55,21 @@ module.exports.noReplyOptions = async function(item, type){
       path:null,
       subject: "Verifica a sua identidade!",
       template: 'emails/code'
+    },
+    depositNewsletter:{
+      path: `${protocol}${baseUrl}/cabinet/fleets`,
+      subject: `Começar a facturar ${item?.name.split(" ")[0]}`,
+      template: "emails/depositNewsletter"
+    },
+    warningBan:{
+      path: `${protocol}${baseUrl}/cabinet/deposits`,
+      subject: `Evita ser bloqueado(a) ${item?.name.split(" ")[0]}`,
+      template: "emails/warningBan"
+    },
+    customized:{
+      path: null,
+      subject: item?.subject,
+      template: "emails/template"
     }
   }
   return{
@@ -59,13 +79,14 @@ module.exports.noReplyOptions = async function(item, type){
     template: datas[type].template, 
     context:{
       logo: `${protocol}${baseUrl}/imgs/logo1.png`,
-      name: item.name,
+      name: item.name.split(" ")[0],
       email: item.email,
       guestEmail: item?.guest?.email ,
       amount: item?.amount,
       code: item?.bruteForce?.code,
       time: formatDate().fullDate,
       agentDetails: item?.agentDetails,
+      innerHtml: item?.innerHtml,
       companyName: companyName,
       location:"1120 Facim, Marracuene Maputo, Moçambique",
       link: datas[type].path,

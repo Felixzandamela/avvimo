@@ -1,56 +1,39 @@
+function setClassList(item, action, _class){
+  item.classList[action](_class);
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   const layout = document.getElementById("layout");
   let toggle = true;
   const navBtn = document.querySelector(".a_btn_Nav");
   navBtn.addEventListener("click", ()=>{
-    if(toggle){layout.classList.add("aside_active");
-    }else{layout.classList.remove("aside_active");}
+    setClassList(layout, (toggle? "add" : "remove"), "aside_active");
     toggle = !toggle;
   });
-  const asideLinks = document.querySelectorAll('.aside_link');
-  asideLinks.forEach(link => {
-    if (link.href === window.location.href) {
-      link.classList.add('a_active');
-    }
-  });
-  
+
   const shrunkenBtn = document.querySelector("#shrunkenBtn");
-  const shrunken = localStorage.getItem('shrunken') === 'true';
-  if (shrunken) {
-    shrunkenBtn.checked = true;
-    layout.classList.add("shrunken");
-  } else {
-    shrunkenBtn.checked = false;
-    layout.classList.remove("shrunken");
+  function setShrunken(){
+    const shrunken = localStorage.getItem('shrunken');
+    shrunkenBtn.checked = !!shrunken;
+    setClassList(layout,  (shrunken? "add" : "remove"), "shrunken");
   }
+  setShrunken();
   shrunkenBtn.addEventListener("change", () => {
-    if (shrunkenBtn.checked) {
-      layout.classList.add("shrunken");
-      localStorage.setItem('shrunken', 'true');
-    } else {
-      layout.classList.remove("shrunken");
-      localStorage.setItem('shrunken', 'false');
-    }
+    localStorage.setItem('shrunken', shrunkenBtn.checked ? "shrunken": ""); 
+    setShrunken();
   });
   
   const themeBtn = document.querySelector(".themeBtn");
   const body= document.querySelector('body')
-  const theme = localStorage.getItem("theme");
-  
-  if(theme === "dark"){
-    body.classList.add("dark");
-  }else{
-    body.classList.remove("dark");
+  function setTheme(){
+    const theme = localStorage.getItem("theme");
+    setClassList(body,  (theme === "dark" ? "add" : "remove"), "dark");
   }
+  setTheme();
   themeBtn.addEventListener("click",()=>{
     let theme = localStorage.getItem("theme");
-    if(theme === "dark"){
-      body.classList.remove("dark");
-      localStorage.setItem('theme', '');
-    }else{
-      body.classList.add("dark");
-      localStorage.setItem('theme', 'dark');
-    }
+    localStorage.setItem('theme', theme ? '' : "dark");
+    setTheme();
   });
   
   let openProfile = true;
@@ -72,7 +55,7 @@ document.addEventListener("DOMContentLoaded", function () {
         else{
           navigator.share({
             title:"Olá",
-            text:"Parabens, recebeste 200.00MT de bonús boas vindas, para resgatar registra-se com o link abaixo.",
+            text:"Olá!\n200.00MT de bonús boas vindas, para resgatar registra-se com o link abaixo.",
             url:valuesToCopy[index].textContent
           }).then(()=>{console.log("Successfully done");
           }).catch((error)=>{console.log(error);copyNow(index);});
@@ -94,9 +77,32 @@ document.addEventListener("DOMContentLoaded", function () {
     },2000);
   }
   
+  function setActiveLink(params, items){
+    const links = document.querySelectorAll(`.${items}`);
+    links.forEach(link => {
+      for(let f of params){
+        const regex = new RegExp(f, 'i');
+        if(regex.test(window.location.href) && regex.test(link.href)){
+          link.classList.add("active");
+          break;
+        }
+      }
+    });
+  }
+  try{
+    if(document.querySelectorAll('.aside_link')){
+      const asideParams = document.getElementById('asideFields');
+      const params = JSON.parse(asideParams.accessKey);
+      setActiveLink(params,"aside_link");
+    }
+    if(document.querySelectorAll("vertical_btn")){
+      const params = ["deposits","withdrawals","commissions","send","models"];
+      setActiveLink(params, "vertical_btn")
+    }
+  }catch(error){};
   
   try {
-  if (document.querySelectorAll(".select")) {
+    if (document.querySelectorAll(".select")) {
     const selects = [...document.querySelectorAll(".select")];
 
     function toggleSelect(key, checked) {
@@ -226,8 +232,6 @@ try{
       });
     }
   }catch(error){};
- 
- 
 });
 
 try{
@@ -262,7 +266,7 @@ try{
         },
         tooltip: {
           headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-          pointFormat: '<tr><td style="color:{series.color};padding:0"></td>' + '<td style="padding:0 color:currentColor"><b> {point.y}</b></td></tr>', // for float number {point.y:.1f}
+          pointFormat: '<tr><td style="color:{series.color};padding:0"></td>' + '<td style="padding:0 color:currentColor"><b>{point.y}</b></td></tr>', // for float number {point.y:.1f}
           footerFormat: '</table>',
           shared: true,
           useHTML: true
@@ -337,7 +341,7 @@ try{
         },
         tooltip: {
           headerFormat: '<span style="font-size:10px; margin-left:5px">{point.key}</span><table>',
-          pointFormat: '<tr><td style="color:{series.color};padding:0"></td>' + '<td style="padding:0; color:{series.color};"><b>{point.y:.2f}</b></td></tr>', // for float number {point.y:.1f}
+          pointFormat: '<tr><td style="color:{series.color};padding:0"></td>' + '<td style="padding:0; color:{series.color};"><b>{MZN point.y:.2f}</b></td></tr>', // for float number {point.y:.1f}
           footerFormat: '</table>',
           shared: true,
           useHTML: true
@@ -372,6 +376,6 @@ try{
         }
       }
       Highcharts.chart(chart, options);
-    console.log(Highcharts)
+    
   }
-}catch(error){};
+}catch(error){alert(error)};

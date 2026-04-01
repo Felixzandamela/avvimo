@@ -1,5 +1,5 @@
-<!DOCTYPE html>
-<html lang="pt-PT">
+ <!DOCTYPE html>
+  <html lang="pt-PT">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -143,19 +143,22 @@
         </div>
       </div>
       <div class="body">
-        <h3 class="name">Olá {{name}}</h3>
-        <h2 class="email-title">Bem-vindo(a)</h2>
+        {{#each innerHtml.title}}
+         <h3 class="name">{{this}}</h3>
+         {{/each}}
+         
+         
         <div class="email-body">
-          <p class="email-text">Você recebeu este e-mail porque se registrou na {{companyName}} com o e-mail: {{email}}.</p>
-          <p class="email-text">Para concluir seu registro, confirme seu e-mail clicando no botão abaixo.</p>
-          <a class="" href="{{link}}" target="_blank">
-            <button class="btn-link primary-color">Confirmar email</button>
-          </a>
-          <p class="email-text">
-            <a class="" href="{{link}}" target="_blank">{{link}}</a>
-          </p>
-          <p class="email-text">Se você não solicitou este evento, pode ignorar este e-mail.</p>
-          <p class="cordial-greetings">Obrigado, atenciosamente equipe {{companyName}}.</p>
+        {{#each innerHtml.paragraphs}}
+  <p class="email-text">{{this}}</p>
+{{/each}}
+
+      
+        {{#each innerHtml.links}}
+  <p class="email-text">{{this}}</p>
+{{/each}}
+
+       <p class="cordial-greetings">Obrigado, atenciosamente equipe {{companyName}}.</p>
         </div>
       <footer>
         <div class="location">{{location}} </div>

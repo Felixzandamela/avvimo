@@ -535,11 +535,11 @@ input::placeholder{color: var(--s-color);}
   user-select: none;
   -webkit-user-select: none;
 }
-.a_active .a_aside_items:before,.a.a_active .a_btn{
+.active .a_aside_items:before,.a.active .a_btn{
   background: #f7f8fc;
   color: var(--main-color);
 }
-.dark .a_active .a_aside_items:before,.dark .a.a_active .a_btn{
+.dark .active .a_aside_items:before,.dark .a.active .a_btn{
   background: #202634;
   color: #fff;
 }
@@ -555,26 +555,26 @@ input::placeholder{color: var(--s-color);}
   text-overflow:ellipsis;
 }
 
-.a.a_active .a_btn:before,.a.a_active .a_btn:after{
+.a.active .a_btn:before,.a.active .a_btn:after{
   content: '';
   position: absolute;
   width: 30px;
   height: 30px;
   border-radius: 50%;
 }
-.a.a_active .a_btn:before{
+.a.active .a_btn:before{
   top: -30px;
   right: -0.3px;
   box-shadow: 15px 15px 0  #f7f8fc;
 }
-.dark .a.a_active .a_btn:before{box-shadow: 15px 15px 0  #202634; }
+.dark .a.active .a_btn:before{box-shadow: 15px 15px 0  #202634; }
 
-.a.a_active .a_btn:after{
+.a.active .a_btn:after{
   bottom: -30px;
   right: -0.3px;
   box-shadow: 15px -15px 0 #f7f8fc;
 }
-.dark .a.a_active .a_btn:after{box-shadow: 15px -15px 0 #202634;}
+.dark .a.active .a_btn:after{box-shadow: 15px -15px 0 #202634;}
 
 .a_shrunken_box{
   padding:0 7.5px;
@@ -863,6 +863,36 @@ input::placeholder{color: var(--s-color);}
   flex-direction: column;
   align-items: flex-start;
   width:100%;
+}
+.vertical_btns_card{
+  padding: 0px 10px 0 10px;
+}
+
+.vertical_btns_wrap{
+  min-width: max-content;
+  display: flex;
+}
+.vertical_btns{
+  width: 100%;
+  overflow: hidden;
+  overflow-x: scroll;
+  position: relative;
+}
+
+.vertical_btns_wrap .btn{
+  border-style: solid;
+  border-color: transparent;
+  height: 32px;
+  border-width:  3px;
+  max-width: max-content;
+  font-size: .9rem;
+  font-weight: 500;
+  transition-delay: 5ms;
+  color: var(--s-color);
+}
+.vertical_btn.active .btn{
+  color: var(--main-color);
+  border-bottom-color: var(--main-color);
 }
 
 .p_hidden{
@@ -2115,7 +2145,7 @@ input[type="checkbox"], input[type="radio"]{
 .nav_active .layout{position: fixed;}
 .nav_active #btnLine2{
   transform: rotate(-45deg);
-  margin-top:-9px;
+  margin-top:-8px;
   transition: 0.2s;
    background: #ddd;
 }

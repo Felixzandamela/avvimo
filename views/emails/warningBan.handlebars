@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Avvimo</title>
-     <style type="text/css">
+    <style type="text/css">
     *{
       margin: 0; 
       padding: 0;
@@ -23,7 +23,6 @@
       max-width: 420px;
       background: #f6f7fd;
       height: max-content;
-      text-align: center;
     }
     .email-logo{
       color: #fff;
@@ -128,9 +127,6 @@
     .icon_l{
       padding:5px 5px 5px 0;
     }
-    .email-text a{
-      color:#316CFF;
-    }
   </style>
   </head>
   <body>
@@ -143,19 +139,16 @@
         </div>
       </div>
       <div class="body">
-        <h3 class="name">Olá {{name}}</h3>
-        <h2 class="email-title">Bem-vindo(a)</h2>
+        <img width="100%" src="public/imgs/warning-ban.png"/>
+        <h3 class="email-title">{{name}}, evite ser bloqueado!</h3>
         <div class="email-body">
-          <p class="email-text">Você recebeu este e-mail porque se registrou na {{companyName}} com o e-mail: {{email}}.</p>
-          <p class="email-text">Para concluir seu registro, confirme seu e-mail clicando no botão abaixo.</p>
-          <a class="" href="{{link}}" target="_blank">
-            <button class="btn-link primary-color">Confirmar email</button>
+          <p class="email-text">Você tem depósitos pendentes ou rejetados.</p>
+          <p class="email-text">Evite ser bloqueado e conclua pelo menos um depósito.</p>
+        
+             <a class="" href="{{link}}" target="_blank">
+            <button class="btn-link primary-color">Ver depósitos</button>
           </a>
-          <p class="email-text">
-            <a class="" href="{{link}}" target="_blank">{{link}}</a>
-          </p>
-          <p class="email-text">Se você não solicitou este evento, pode ignorar este e-mail.</p>
-          <p class="cordial-greetings">Obrigado, atenciosamente equipe {{companyName}}.</p>
+             <p class="cordial-greetings">Obrigado, atenciosamente equipe {{companyName}}.</p>
         </div>
       <footer>
         <div class="location">{{location}} </div>
