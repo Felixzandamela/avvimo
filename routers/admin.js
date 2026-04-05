@@ -298,27 +298,24 @@ const setTemplate = function(text, user) {
 
 
 admin.post("/e-mails/send-new", urlencodedParser, async (req, res) => {
-  try {
-    const { name, value, subject, emailText } = req.body;
-    const regexQuery = /^(all|notMadeDeposit|madeDeposit)$/i;
-    const query = name && regexQuery.test(name) ? value : name === "email" ? { email: { $in: value.split(",") } } : { [name]: value };
-    let users = await getUsersToEmail(query);
-    if (users) {
-      for (let k = 0; k < users.length; k++) {
-        const user = users[k];
-        let currentUserToEmail = {
-          innerHtml: setTemplate(emailText, user),
-          subject: subject,
-          name: user.name,
-          email: user.email
-        }
-        const send = await sendEmail(currentUserToEmail, "customized");
+  const { name, value, subject, emailText } = req.body;
+  const regexQuery = /^(all|notMadeDeposit|madeDeposit)$/i;
+  const query = name && regexQuery.test(name) ? value : name === "email" ? { email: { $in: value.split(",") } } : { [name]: value };
+  let users = await getUsersToEmail(query);
+  if (users) {
+    for (let k = 0; k < users.length; k++) {
+      const user = users[k];
+      let currentUserToEmail = {
+        innerHtml: setTemplate(emailText, user),
+        subject: subject,
+        name: user.name,
+        email: user.email
       }
-      res.redirect("/admin/e-mails/send");
+      const send = await sendEmail(currentUserToEmail, "customized");
     }
-  } catch (error) {
-    console.error(error);
-    req.flash("error", error);
+    res.redirect("/admin/e-mails/send");
+  }else{
+    req.flash("error", "Usuaríos não encontrados");
     res.redirect("/admin/e-mails/send");
   }
 });
@@ -374,7 +371,7 @@ cron.schedule('* * * * *', async () => {
 });
 
 
-cron.schedule('0 8 */1 * *', async () => {
+cron.schedule('0 8 * * 2', async () => {
   if(process.env.ENV_TYPE === "production"){
     const usersUnverified =  await getUsers({verified: false});
     if(usersUnverified && Array.isArray(usersUnverified)){
