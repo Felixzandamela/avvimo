@@ -11,7 +11,7 @@ module.exports.pagination = function(datas, page, link, organize){
     },
     nextPage:{
       no:nextPage,
-      href:`${link.path}?page=${previousPage}&${link.queryString}`
+      href:`${link.path}?page=${nextPage}&${link.queryString}`
     },
     datas: organize ? organizeByDate(pageDatas) : pageDatas,
     pageDetails:{
