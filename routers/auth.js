@@ -61,6 +61,9 @@ auth.post('/sign-up', urlencodedParser, async (req,res) =>{
     collection: "users",
     data: bodys
   }
+  // set delete account in 30 days by default if account not confirmed
+  datas.data.inDeleteQueue.status = true;
+  
   const {upline} = req.body;
   if(upline){
     const myUpline = await Actions.get("users", upline);
@@ -116,6 +119,8 @@ auth.get("/account-verification", urlencodedParser, async (req,res)=>{
       res.status(404).render("mains/cards-th",data);
     }else{
       account.verified = true;
+      account.inDeleteQueue.status = false;
+      
       account.save().then(()=>{
         const d ={
           title: "Verificado!",

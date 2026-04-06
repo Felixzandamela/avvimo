@@ -8,7 +8,7 @@ function check(input, type, index){
       return !input.match(/^[a-zA-Z][a-zA-Z0-9\-\_\.]+@[a-zA-Z0-9]{2,}\.[a-zA-Z0-9]{2,}$/) ? {msg: "E-mail inválido!", index:index} : null;
       break;
     case "name" || "username" :
-      return input.length < 3 ? {msg: "O nome deve ter pelo menos mais de 3 caracteres.",index:index} : null;
+      return input.length < 3 || /^\d+$/.test(input) || /^[a-zA-Z][a-zA-Z0-9\-\_\.]+@[a-zA-Z0-9]{2,}\.[a-zA-Z0-9]{2,}$/.test(input) ? {msg: "O nome inválido.",index:index} : null;
       break;
     case "newpassword":
       let invalid = !input.match(/[A-Za-z]/) ||  !input.match(/[0-9]/) || input.length < 5 ? true : false

@@ -358,7 +358,7 @@ cron.schedule('* * * * *', async () => {
         bodys.status = "Concluido";
         result = await DepositsActions(bodys);
       }
-      if(formatDate(date).minutesLength >= 120 && status === "Pendente"){
+      if(formatDate(date).daysLength >= 2 && status === "Pendente"){
         bodys.status = "Rejeitado";
         result = await DepositsActions(bodys);
       }
