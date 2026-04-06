@@ -62,7 +62,7 @@ auth.post('/sign-up', urlencodedParser, async (req,res) =>{
     data: bodys
   }
   // set delete account in 30 days by default if account not confirmed
-  datas.data.inDeleteQueue.status = true;
+  datas.data["inDeleteQueue"] = {status: true};
   
   const {upline} = req.body;
   if(upline){
