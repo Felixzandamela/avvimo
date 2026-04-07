@@ -302,6 +302,7 @@ admin.post("/e-mails/send-new", urlencodedParser, async (req, res) => {
   const regexQuery = /^(all|notMadeDeposit|madeDeposit)$/i;
   const query = name && regexQuery.test(name) ? value : name === "email" ? { email: { $in: value.split(",") } } : { [name]: value };
   let users = await getUsersToEmail(query);
+  const emailPromises = [];
   if (users) {
     for (let k = 0; k < users.length; k++) {
       const user = users[k];
@@ -311,8 +312,11 @@ admin.post("/e-mails/send-new", urlencodedParser, async (req, res) => {
         name: user.name,
         email: user.email
       }
-      const send = await sendEmail(currentUserToEmail, "customized");
+      emailPromises.push(sendEmail(currentUserToEmail, "customized"));
     }
+    await Promise.all(emailPromises);
+    req.flash("success", `${users.length} e-mail(s) enviado(s) com sucesso`);
+    
     res.redirect("/admin/e-mails/send");
   }else{
     req.flash("error", "Usuaríos não encontrados");
