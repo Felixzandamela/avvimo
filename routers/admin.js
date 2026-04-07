@@ -326,28 +326,10 @@ admin.post("/e-mails/send-new", urlencodedParser, async (req, res) => {
 
 const cron = require('node-cron');
 
-cron.schedule('* * * * *', async () => {
-  const usersTodelete = await Actions.get("users",{inDeleteQueue:true});
+cron.schedule('*/5 * * * *', async () => {
   const depositsToUpdate = await Actions.get("deposits", {status:{ $in: ["EmProgresso", "Pendente"]}});
   const prop = function(result,_id,status){
     if(result){console.log( `deposits: ${_id} ${status}`);}
-  }
-  
-  if(usersTodelete){
-    for(let b in usersTodelete){
-      const {_id, name} = usersTodelete[b];
-      const {date} = usersTodelete[b].inDeleteQueue;
-      if(formatDate(date).secondsLength >= 1){
-        const datas = {
-          type: "delete",
-          redirect:`/admin/users`,
-          collection:"users",
-        }
-        const results = await Actions.delete(_id, datas, true);
-        console.log(name, "Deleted successfull");
-        if(results) continue;
-      }
-    }
   }
   if(depositsToUpdate){
     for(let d in depositsToUpdate){
@@ -370,6 +352,26 @@ cron.schedule('* * * * *', async () => {
         prop(result,_id,bodys.status);
         continue;
       }else{continue;}
+    }
+  }
+});
+
+cron.schedule('*/10 * * * *', async function(){
+  const usersTodelete = await Actions.get("users",{inDeleteQueue:true});
+  if(usersTodelete){
+    for(let b in usersTodelete){
+      const {_id, name} = usersTodelete[b];
+      const {date} = usersTodelete[b].inDeleteQueue;
+      if(formatDate(date).secondsLength >= 1){
+        const datas = {
+          type: "delete",
+          redirect:`/admin/users`,
+          collection:"users",
+        }
+        const results = await Actions.delete(_id, datas, true);
+        console.log(name, "Deleted successfull");
+        if(results) continue;
+      }
     }
   }
 });
