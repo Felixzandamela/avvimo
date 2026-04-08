@@ -57,13 +57,14 @@ class Commission {
   }
 }
 
+
 module.exports.DepositsActions = async function (body, internal) {
   const bodyError = checkBody(body);
   if (bodyError) return bodyError;
   let deposit = await Actions.get("deposits", body._id);
   if (!deposit) return errorMsgs("empty", "deposíto");
   if (/^(Concluido|Anulado)$/i.test(deposit.status)) return errorMsgs("cantProcess", "deposíto");
-  const fleet = await getFleets(null, deposit.fleet);
+  const fleet = await getFleets("admin", deposit.fleet);
   if (!fleet) return errorMsgs("empty", "deposíto");
   const datas = setDatas("deposits", body._id);
 
