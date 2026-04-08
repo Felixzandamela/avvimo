@@ -32,7 +32,7 @@ const _host = process.env.HOST;
 const company = process.env.COMPANY;
 const {authentication, authAdmin} = require("./middlewares/authentication");
 
-const {asideLinks,transformDatas,_defineProperty} = require("./middlewares/utils");
+const {asideLinks,transformDatas,_defineProperty,getScheduleEvent} = require("./middlewares/utils");
 const {getFleets} = require("./middlewares/getFleets");
 
 const DATABASE = process.env.DATABASE;
@@ -101,6 +101,7 @@ app.use(async(req, res, next)=>{
   res.locals.gateways = await Actions.get("gateways", {status: true});
   res.locals.user = req.user? await transformDatas(_defineProperty(req.user._doc),true) : null;
   res.locals.affiliates = affiliatesCard ? affiliatesCard.cards[0] : null;
+  res.locals.events = getScheduleEvent();
   res.locals.storage = storage.getItem("dbStorage");
   next();
 });
@@ -150,6 +151,7 @@ app.use("/cabinet", cabinet);
 app.use("/admin", admin);
 app.use("/auth",auth); /*vhost("auth.localhost",*/ 
 app.use(index);
+
 
 /*
 const options = { 

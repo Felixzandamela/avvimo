@@ -39,6 +39,27 @@
             </div>
             {{/if}}
         </header>
+        {{#if events}}
+        <div class="padd15-a eventCard">
+  <div style="background-image: url({{events.src}});" class="a_container br6-a">
+    <div class="padd10-a br6-a ev">
+        <div class="padd10-l ev-wrap">
+          <div class="flex_b padd10-b">
+            <div class="">
+            <h3 class="title">Feliz {{events.message}}</h3>
+            </div>
+          </div>
+        <p class="padd5-tb">Oferta especial, <span>+{{events.percentage}}%</span> de retorno em cada frota que adquirir hoje.</p>
+        <div>
+          <a href="/cabinet/fleets" class="a">Depositar agora <i class="bi bi-chevron-right"></i></a>
+        </div>
+        </div>
+     </div>
+     
+    </div>
+  </div>
+   
+        {{/if}}
          {{#if user.inDeleteQueue.status}}
           {{>_delete-account-warning}}
         {{/if}}

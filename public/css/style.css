@@ -2317,19 +2317,45 @@ input[type="checkbox"], input[type="radio"]{
     background-repeat: no-repeat;
     background-image: url("/imgs/w_storange.png");
   }
-  .av{
+  .av, .ev{
     z-index: 1;
     position: relative;
-    background-image: linear-gradient(to right,  #fff , transparent);
-    background-image: -o-linear-gradient(to right,  #fff , transparent);
-    padding: 20px;
+    background-image: linear-gradient(to right,  #fff , rgba(255,255,255,0.90),  transparent);
+    background-image: -o-linear-gradient(to right,  #fff , rgba(255,255,255,0.90), transparent);
     height: 100%;
   }
+.eventCard img{
+  width: 40px;
+  min-width: 40px;
+  height: 40px;
+  object-fit: cover;
+}
   
-  .dark .av{
+  .dark .av, .dark .ev{
     background-image: linear-gradient(to right,  #293042 , transparent);
     background-image: -o-linear-gradient(to right,  #293042 , transparent);
   }
+  
+  .ev-wrap{
+    width: 70%;
+  }
+  .eventCard{height: max-content;}
+  .eventCard .title, .eventCard .a, .eventCard  span{
+    color: var(--main-color);
+  }
+  .eventCard p{
+    font-size: 0.80rem;
+  }
+  .eventCard .a{font-weight: 500;
+    width: max-content;
+  }
+  .eventCard .a_container{
+    position: relative;
+    height: 100%;
+    background-position: right;
+    background-repeat: no-repeat;
+  }
+  
 
   .warning_storange a, .warning_storange .title{color:#FF6F00;}
   .storage_dotes{color: var(--s-color);} 

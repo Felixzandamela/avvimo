@@ -2,6 +2,7 @@ const { getTime, objRevised, expireDay, coll, formatDate, sortByDays, statusIcon
 const { Actions } = require("./action");
 const { pagination } = require('./pagination');
 const {sendEmail} = require('./sendEmail');
+const {getFleets} = require("./getFleets");
 
 function setDatas(collection, _id) {
   return {
@@ -59,16 +60,16 @@ class Commission {
 module.exports.DepositsActions = async function (body, internal) {
   const bodyError = checkBody(body);
   if (bodyError) return bodyError;
-  console.log(body)
-  let deposit = await Actions.get("deposits", body._id, ["fleet"]);
+  let deposit = await Actions.get("deposits", body._id);
   if (!deposit) return errorMsgs("empty", "deposíto");
   if (/^(Concluido|Anulado)$/i.test(deposit.status)) return errorMsgs("cantProcess", "deposíto");
-
+  const fleet = await getFleets(null, deposit.fleet);
+  if (!fleet) return errorMsgs("empty", "deposíto");
   const datas = setDatas("deposits", body._id);
 
   switch (body.status) {
     case "EmProgresso": {
-      const newDepositData = new Deposit(body, deposit.fleet);
+      const newDepositData = new Deposit(body, fleet);
       datas.data = newDepositData;
       const updatedDeposit = await Actions.update(deposit._id, datas, true);
       if (!updatedDeposit) return errorMsgs("errorAc", "deposíto", "EmProgresso");

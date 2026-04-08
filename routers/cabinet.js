@@ -10,7 +10,6 @@ const {pagination} = require('../middlewares/pagination');
 const {Actions} = require('../middlewares/action');
 const {getFleets} = require("../middlewares/getFleets");
 const {performance} = require("../middlewares/performances");
-
 const alertDatas = {
   type:"error",
   title:"Erro!",
@@ -46,7 +45,7 @@ cabinet.get('/fleets', urlencodedParser, async (req, res) => {
 
 cabinet.get("/deposit", urlencodedParser, async (req,res)=>{
   const {fleetId} = req.query;
-  const fleet = await Actions.get("fleets",fleetId);
+  const fleet = await getFleets("cabinet", fleetId);
   const gateways = await Actions.get("gateways",{status:true});
   const accounts = await getAccounts(req.user, false);
   if(fleet && gateways){
@@ -59,8 +58,9 @@ cabinet.get("/deposit", urlencodedParser, async (req,res)=>{
 
 cabinet.post("/deposit", urlencodedParser, async (req,res)=>{
   const bodys = await transformDatas(req.body);
-  const fleet = await Actions.get("fleets",bodys.fleet);
+  const fleet = await getFleets("cabinet", bodys.fleet);
   const [cashback] = await Actions.get("gateways",{name:"Cashback"});
+  
   class Deposit{
     constructor(body,fleet){
       this.owner = req.user._id;
@@ -113,7 +113,7 @@ cabinet.post("/deposit", urlencodedParser, async (req,res)=>{
         if(newDeposit){
           datas.redirect = `/cabinet/transactions/deposits/view?_id=${newDeposit._id}`;
           if(req.user.upline){
-            const [upline] = await Actions.get("users",req.user.upline);
+            const upline = await Actions.get("users",req.user.upline);
               if(upline){
               const commission =  new Commission(req.user.upline, newDeposit, cashback);
               datas.collection = "commissions";
