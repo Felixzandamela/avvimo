@@ -28,6 +28,7 @@
             <div class="title">A escolha perfeita para <span>pessoas de negócios</span> como você.</div>
             <p class="features-paragraph m5-tb">Escolhe uma frota de investimento que melhor se adequa ao teu perfil pra começar.</p>
           </div>
+          {{#if events}}
           <div class="padd15-a eventCard">
   <div style="background-image: url({{events.src}});" class="a_container br6-a">
     <div class="padd10-a br6-a ev">
@@ -44,7 +45,7 @@
      
     </div>
   </div>
-   
+           {{/if}}
         {{/if}}
         {{#if fleets}}
           {{>_fleets_container}}

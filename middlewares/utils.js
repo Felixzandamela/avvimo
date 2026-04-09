@@ -227,7 +227,7 @@ const crypt = async function(item){
     const hash = await bcrypt.hash(item, salt);
     return hash;
   }catch(error){
-    console.log(error);
+    console.error(error);
     return null;
   }
 };
