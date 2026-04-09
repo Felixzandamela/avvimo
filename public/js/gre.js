@@ -106,9 +106,10 @@ submitBtn.addEventListener("click",()=>{
  }  
 });
 function shakeStars(){
-  avvimo.setClass($("#t_stars")[0], "shakes");
+  const t_stars = document.getElementById("t_stars");
+  t_stars.classList.add("shakes");
   setTimeout(()=>{
-    avvimo.setClass($("#t_stars")[0], "shakes");
+    t_stars.classList.remove("shakes");
   },500);
 }
 
@@ -171,16 +172,16 @@ try{
 try{
   const  emojisExpressions = ["bi bi-emoji-neutral", "bi bi-emoji-frown", "bi bi-emoji-expressionless", "bi bi-emoji-smile", "bi bi-emoji-heart-eyes"];
   const colorsArray = ["red","orange", "lightblue","lightgreen","gold"];
-  if(document.querySelector(".star")){
-    const star = [...document.querySelectorAll(".new_star")];
+  if(document.querySelector(".new_star")){
+    const new_stars = [...document.querySelectorAll(".new_star")];
     const stars = document.getElementById("stars");
     const init = parseInt(stars.value);
     if(init > 0){updateRating(init - 1);}
-     star.forEach((star,index)=>{
+     new_stars.forEach((star,index)=>{
       star.addEventListener("click", ()=>updateRating(index))
     });
     function updateRating(i){
-      star.forEach((star, idx)=>{
+      new_stars.forEach((star, idx)=>{
         if(idx < i + 1){
           stars.value = idx + 1;
           star.classList.add("active");
@@ -208,7 +209,7 @@ try{
   });
   }
   
-}catch(error){console.error(error)};
+}catch(error){console.error(alert(error))};
 
 try{
   if($(".selectEmailers").length > 0){
