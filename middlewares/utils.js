@@ -453,6 +453,12 @@ const scheduleEvents =[
     message:"Natal",
     percentage: 25,
   },
+    {
+    src:"/imgs/event_background.png",
+    date:"3 10",
+    message:"Promoçao",
+    percentage: 25,
+  },
 ];
 module.exports.getScheduleEvent = function (){
   let currentEvent = null;
