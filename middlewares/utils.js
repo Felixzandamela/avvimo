@@ -454,8 +454,8 @@ const scheduleEvents =[
     percentage: 25,
   },
     {
-    src:"/imgs/event_background.png",
-    date:"3 10",
+    src:"/imgs/aniver.jpg",
+    date:"3 14",
     message:"Promoçao",
     percentage: 25,
   },
