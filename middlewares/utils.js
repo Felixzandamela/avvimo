@@ -455,9 +455,9 @@ const scheduleEvents =[
   },
     {
     src:"/imgs/aniver.jpg",
-    date:"3 14",
+    date:"3 19",
     message:"Promoçao",
-    percentage: 25,
+    percentage: 30,
   },
 ];
 module.exports.getScheduleEvent = function (){
