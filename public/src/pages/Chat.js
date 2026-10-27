@@ -263,7 +263,7 @@ const Chat = ({language, id, mode,onCloseChat})=>{
       });
     } 
   } // add new images message
-  
+
   const removeImage =(e)=>{
     const id = typeof e === "object" ? e.id : e;
     if(id){dbImages.child(id).remove().catch((error)=>{console.log(error);});}
@@ -302,6 +302,7 @@ const Chat = ({language, id, mode,onCloseChat})=>{
     }
   }; // sending message event
   
+
   const handleClear = (e)=>{
     const alertData = {
       header:false,
@@ -403,6 +404,9 @@ const Chat = ({language, id, mode,onCloseChat})=>{
       break;
     }
   }
+  
+  const baseUrl = document.getElementById("baseUrl").value;
+
   return(
     <div className="a_chat">
       <ImageViewer language={language} datas={states.images} onClose={()=>setStates(prevState=>({...prevState,images:null}))}/>
@@ -465,7 +469,7 @@ const Chat = ({language, id, mode,onCloseChat})=>{
                
                 <div className="padd6-10 flex_s_c" onClick={()=>handleToggle("reply","set")}><i className="bi bi-chat-text m5-r"></i><p className="ellipsis">{texts.automaticReply[language]}</p></div>
                <div className="padd6-10 flex_s_c" onClick={()=>handleToggle("question","set")}><i className="bi bi-chat-text m5-r"></i><p className="ellipsis">{texts.automaticQuestion[language]}</p></div>
-                <a href={`http://localhost:8089/admin/users?id=${header.datas.profileKey}`} target="_blank" className="a padd6-10 flex_s_c"> <i className="bi bi-person"></i> <p className="ellipsis">{texts.viewProfile[language]}</p></a>
+                <a href={`${baseUrl}/admin/users?id=${header.datas.profileKey}`} target="_blank" className="a padd6-10 flex_s_c"> <i className="bi bi-person"></i> <p className="ellipsis">{texts.viewProfile[language]}</p></a>
               </div>||
               <div className="a_c_menu a_container_br br4-a">
                 <div className="padd6-10 flex_s_c" onClick={()=>handleReplyAction("question")}><i className="bi bi-chat-text m5-r"></i><p className="ellipsis">{texts.automaticQuestions[language]}</p></div>
@@ -552,7 +556,7 @@ const Chat = ({language, id, mode,onCloseChat})=>{
       <form onSubmit={handleSubmit} className="msger_box">
         <div onClick={()=>setStates(prevState=>({...prevState,actions:null,index:null}))} className="msger_box_wrap a_container">
           {values.images.length > 0 &&
-            <div className="a_send_images flex_wrap">
+            <div style={{justifyContent: values.images.length >= 4 ? "center": "left"}} className="a_send_images flex_wrap">
               {values.images.slice(-maxDisplay).map((image, k) => (
                 <div key={k} className="a_send_image_wrap">
                   <div className="a_send_image_card">
@@ -694,7 +698,7 @@ const FaqsForm =({language,type, props, handleToggle})=>{
       <div className="label_error">{error && error.text}</div>
     </div>
         </div>
-        <div className="a_alert_btns flex_e_c">
+        <div className="a_alert_btns fg flex_e_c">
           <div className="a_alert_btn_wrap">
             <button onClick={()=>handleToggle("reply")} type="button" className="a_alert_btn_cancel br6-a">{texts.cancel[language]}</button>
           </div>
@@ -786,18 +790,18 @@ const AutoFaqs = ({language,mode,type,onSend,handleReplyAction}) =>{
         </div>
           <div className="modal_body">
           {mode ==="admin" && datas && datas.map(item=>(
-           <div key={idGenerator(16)} className="padd15-a">
+           <div key={idGenerator(16)} className="padd_20">
              <p>{item.text}</p>
             
             <div className="flex_e_c faqs_btns padd10-t">
-              <button className="br6-a padd6-10 transparent-btn-br" onClick={()=>handleReplyAction(type, "update", item)}>Editar</button>
-              <button className="br6-a padd6-10 danger-btn" onClick={()=>handleClear(item.id)}>Deletar</button>
-              <button className="br6-a padd6-10 primary-btn" onClick={()=>handleReplyAction(type, "send", item)}>Enviar</button>
+              <button className="br6-a m5-r padd6-10 transparent-btn-br" onClick={()=>handleReplyAction(type, "update", item)}><i class="bi bi-pen"></i></button>
+              <button className="br6-a padd6-10 danger-btn" onClick={()=>handleClear(item.id)}><i class="bi bi-trash3"></i></button>
+              <button className="br6-a m5-l padd6-10 primary-btn" onClick={()=>handleReplyAction(type, "send", item)}><i class="bi bi-send"></i></button>
             </div>
           </div>
           ))}
           {mode === "cabinet" && datas && datas.map(item=>(
-           <div key={idGenerator(16)} onClick={()=>handleReplyAction(type, "send", item)} className="padd15-a flex_b_c">
+           <div key={idGenerator(16)} onClick={()=>handleReplyAction(type, "send", item)} className="padd_20 flex_b_c">
              <p>{item.text}</p>
               <div className="br60 btn_circle flex_c_c">
                 <i className="bi bi-chevron-right"></i>
