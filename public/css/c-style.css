@@ -293,9 +293,10 @@ input::placeholder{color: var(--s-color);}
 }
 .a_chats_li_box{
   overflow: auto;
-  width:100%;
-  height:calc(100vh - 100px);
-  min-height:calc(100vh - 100px);
+  width: 100%;
+  height: calc(100% - 100px);
+  position: relative;
+  min-height: calc(100% - 100px);
 }
 
 .a_scroll_bar::-webkit-scrollbar{
