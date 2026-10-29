@@ -480,7 +480,7 @@ const Chat = ({language, id, mode,onCloseChat})=>{
                
                 <div className="padd6-10 flex_s_c" onClick={()=>handleToggle("reply","set")}><i className="bi bi-chat-text m5-r"></i><p className="ellipsis">{texts.automaticReply[language]}</p></div>
                <div className="padd6-10 flex_s_c" onClick={()=>handleToggle("question","set")}><i className="bi bi-chat-text m5-r"></i><p className="ellipsis">{texts.automaticQuestion[language]}</p></div>
-                <a href={`${baseUrl}/admin/users?id=${ownerID}`} target="_blank" className="a padd6-10 flex_s_c"> <i className="bi bi-person"></i> <p className="ellipsis">{texts.viewProfile[language]}</p></a>
+                <a href={`${baseUrl}/admin/users?_id=${ownerID}`} target="_blank" className="a padd6-10 flex_s_c"> <i className="bi bi-person"></i> <p className="ellipsis">{texts.viewProfile[language]}</p></a>
               </div>||
               <div className="a_c_menu a_container_br br4-a">
                 <div className="padd6-10 flex_s_c" onClick={()=>handleReplyAction("question")}><i className="bi bi-chat-text m5-r"></i><p className="ellipsis">{texts.automaticQuestions[language]}</p></div>
