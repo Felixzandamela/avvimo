@@ -53,7 +53,7 @@ const Chat = ({language, id, mode,onCloseChat})=>{
             }).then(()=>{handleNewChat(newChat);}).catch(()=>{setError(prevError=>({...prevError,error:{text:error.message,stack:"error"}}));});
           }else{handleNewChat(newChat);}
         }
-      } //else
+      }
     }
     const handleNewChat = (newChat)=>{
       const promises = [];
