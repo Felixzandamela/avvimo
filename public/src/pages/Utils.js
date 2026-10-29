@@ -28,7 +28,7 @@ export const Avatar = ({avatar,color}) => {
   let isBanned = avatar && avatar.isBanned !== undefined ? avatar.isBanned : null;
   if(!avatar){return null}
   return(
-    <div className="avatar br60">
+    <div className="c-avatar br60">
       {avatar.avatar && <img className="br60" src={avatar.avatar}/>||
       <div className="flex_c_c br60" style={colour}>{abbreviation(avatar.name)}</div>}
       {isBanned && <div className="isBanned br60 flex_c_c"><i className="bi bi-exclamation"></i></div>}
