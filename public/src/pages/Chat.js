@@ -21,6 +21,7 @@ const Chat = ({language, id, mode,onCloseChat})=>{
   const [values, setValues]=useState({text:"",images:[]});
   const [newMsg,setNewMsg] = useState(null);
   const [header,setHeader] = useState(null);
+  const [ownerID, setOwnerID] = useState("");
   
   useEffect(()=>{
     setStates(prevState=>({...prevState,isLoading:true}));
@@ -106,7 +107,17 @@ const Chat = ({language, id, mode,onCloseChat})=>{
         });
       });
     };
+
+    const handleOwnerId = snapId =>{
+      if(snapId.exists()){
+        const {email} = snapId.val();
+        const ownerId = typeof email === "string" ? email.split("@")[0] : email;
+        setOwnerID(ownerId);
+      }
+    }
+    
     if (chatId && isAuth) {
+      dbUsers.child(chatId).on("value", handleOwnerId);
       dbChats.child(chatId).on("value", handleChatAdded);
       dbChats.child(chatId).on("child_changed", () => {
         setDatas(null);
@@ -469,7 +480,7 @@ const Chat = ({language, id, mode,onCloseChat})=>{
                
                 <div className="padd6-10 flex_s_c" onClick={()=>handleToggle("reply","set")}><i className="bi bi-chat-text m5-r"></i><p className="ellipsis">{texts.automaticReply[language]}</p></div>
                <div className="padd6-10 flex_s_c" onClick={()=>handleToggle("question","set")}><i className="bi bi-chat-text m5-r"></i><p className="ellipsis">{texts.automaticQuestion[language]}</p></div>
-                <a href={`${baseUrl}/admin/users?id=${header.datas.profileKey}`} target="_blank" className="a padd6-10 flex_s_c"> <i className="bi bi-person"></i> <p className="ellipsis">{texts.viewProfile[language]}</p></a>
+                <a href={`${baseUrl}/admin/users?id=${ownerID}`} target="_blank" className="a padd6-10 flex_s_c"> <i className="bi bi-person"></i> <p className="ellipsis">{texts.viewProfile[language]}</p></a>
               </div>||
               <div className="a_c_menu a_container_br br4-a">
                 <div className="padd6-10 flex_s_c" onClick={()=>handleReplyAction("question")}><i className="bi bi-chat-text m5-r"></i><p className="ellipsis">{texts.automaticQuestions[language]}</p></div>
