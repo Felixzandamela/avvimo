@@ -294,9 +294,9 @@ input::placeholder{color: var(--s-color);}
 .a_chats_li_box{
   overflow: auto;
   width: 100%;
-  height: calc(100% - 50px);
+  height: 100%;
   position: relative;
-  min-height: calc(100% - 50px);
+  min-height: 100%;
 }
 
 .a_scroll_bar::-webkit-scrollbar{
@@ -374,7 +374,7 @@ input::placeholder{color: var(--s-color);}
 }
 .a_chat_roller{
   padding:10px 10px 0 10px;
-  height: calc(100% - 110px);
+  height: calc(100vh - 60px);
   overflow: hidden;
   overflow-y: auto;
   width: 100%;
@@ -659,7 +659,7 @@ background: transparent;
   color: var(--s-color);
 }
 
-@media screen and (min-width:1200px) {
+@media screen and (min-width:768px) {
   .a_chats_list, .a_chat{
     position: relative!important;
   }
@@ -676,6 +676,7 @@ background: transparent;
   
   .a_chats_list{
     padding: 0 0 15px 15px;
+    height: 100%;
   }
 
   .a_width_40{
@@ -693,9 +694,6 @@ background: transparent;
   .a_chats_li_box{
     background:#fff;
     height: 100%!important;
-    border-radius: 6px;
-    -moz-border-radius: 6px;
-    -webkit-border-radius: 6px;
   }
 }
 

@@ -41,7 +41,9 @@ const Main = ({props, onChanges}) =>{
   const [scrollToTop, setScrollToTop]= useState(false);
   const [alertDatas, setAlertDatas] = useState(null);
   const [error,setError]=useState({ error:{text:null,stack:null,fixed:false}});
-  const [toggle,setToggle] =useState({auth:true});
+  const [toggle,setToggle] =useState({auth:true, searchField: false});
+  const [search, setSearch] = useState("");
+  const searchInput = useRef(null);
   
   useEffect(() => {
     const handleScroll = () => {if(window.pageYOffset > window.outerHeight) {setScrollToTop(true);} else {setScrollToTop(false);}};
@@ -160,16 +162,46 @@ const Main = ({props, onChanges}) =>{
     setAlertDatas(alertData);
   }
 
+  function handleChange(event){
+    const {value} = event.target;
+    setSearch(value);
+  }
+
+  function toggleSearch(){
+    setToggle(prevToggle=>({...prevToggle,searchField: !toggle.searchField}));
+    setSearch("");
+    setTimeout(function(){
+      if(searchInput.current){
+        searchInput.current.focus();
+      }
+    },0);
+  }
+
+  function handleBlur(){
+    if(!search){
+      toggleSearch();
+    }
+  }
+
   return(
     <main className={`a_main ${props.theme}`}>
       <Toast props={error.error} onClear={()=>setError(prevError=>({...prevError,error:{text:null,stack:null,fixed:false}}))}/>
       <nav className="m_nav nav a_container flex_b_c">
         <div className="left_items padd10-lr">
-          <div className="logo m5-lr flex_b_c">
-            
-            
+          {!toggle.searchField && <div className="logo m5-lr flex_b_c">
+              
           <div className="m5-l">Avvimo-chat</div>
-          </div>
+          </div>|| ""}
+
+          {mode === "admin" && <div className="flex_e_c a_search_card_b a_container">
+            {toggle.searchField &&  <input ref={searchInput} value={search || ""} name="search" onChange={handleChange} onBlur={handleBlur} placeholder={texts.searchChat[props.language]} type="text"/> || ""}
+                {!toggle.searchField && <i onClick={toggleSearch} className="bi bi-search"> </i> || 
+                  <svg onClick={toggleSearch}  className="" fill="currentColor" opacity="1.0" baseProfile="full" width="24" height="24" viewBox="0 0 24.00 24.00">
+                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/>
+                  </svg>
+                }
+              </div>
+         ||"" }
         </div>
         <div className="right_items padd10-lr flex_c_c">
           <div className="m5-lr">
@@ -213,7 +245,7 @@ const Main = ({props, onChanges}) =>{
 || <div>
   
   {mode === "admin" &&
-    <SupportChat language={props.language}/> ||
+    <SupportChat language={props.language} search={search}/> ||
     <Chat language={props.language} id={isAuthenticated} mode={"cabinet"}/>
   }
 </div>

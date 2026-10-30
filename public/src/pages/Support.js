@@ -4,14 +4,14 @@ import {Avatar,MinLoder,Loader, EmptyCard, formatDate,idGenerator} from "./Utils
 import Chat from './Chat.js'; 
 import {currentUser,useAuth, dbChats, dbUsers} from '../auth/FirebaseConfig.js';
 
-const SupportChat =({language})=>{
+const SupportChat =({language, search})=>{
   const user = currentUser();
   const current = useAuth();
   const isMounted = useRef(true);
   const [items, setItems] = useState(null);
   const [datas, setDatas] = useState(null);
   const [currentChat, setCurrentChat] = useState(null);
-  const [states,setStates] = useState({loading:false, noChatStarted:false,search:""})
+  const [states,setStates] = useState({loading:false, noChatStarted:false})
   
   useEffect(() => {
     const handleChats = snapChat => {
@@ -50,14 +50,14 @@ const SupportChat =({language})=>{
   useEffect(()=>{ 
   if(isMounted && items ){
     const filteredDatas = items.filter((item)=>{
-      if(states.search !== "" && item.owner && item.owner.name && item.owner.name.toLowerCase().indexOf((states.search || '').toLowerCase()) >=0 || states.search === ""){
+      if(search !== "" && item.owner && item.owner.name && item.owner.name.toLowerCase().indexOf((search || '').toLowerCase()) >=0 || search === ""){
         return true
       }
       return false;
     });
     setDatas(filteredDatas);
   }
-},[items,states.search]);
+},[items,search]);
 
   useEffect(()=>{
     const noChatStarted = currentChat;
@@ -82,22 +82,7 @@ const SupportChat =({language})=>{
     <section className="a_sec">
       <div className="sec_chat flex_b">
         <div className="a_chats_list a_width_40">
-          <div className="a_box_o">
-            <div className="a_chat_list_header a_cntainer flex_b_c">
-              <div  className="flex_c_c br60 btn_circle"> 
-                <svg fill="currentColor" opacity="1.0" baseProfile="full" width="26" height="26" viewBox="0 0 24.00 24.00">
-                  <path d="M20 11v2H7.99l5.505 5.505-1.414 1.414L4.16 12l7.92-7.92 1.414 1.415L7.99 11H20z"/>
-                </svg>
-              </div>
-              <div className="flex_e_c a_search_card_b a_container">
-                <input value={states.search || ""} name="search" onChange={handleChange} placeholder={texts.searchChat[language]} type="text"/>
-                {!states.search && <i className="bi bi-search"> </i> || 
-                  <svg onClick={()=>setStates(preState=>({...preState,search:""}))}  className="" fill="currentColor" opacity="1.0" baseProfile="full" width="24" height="24" viewBox="0 0 24.00 24.00">
-                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/>
-                  </svg>
-                }
-              </div>
-            </div>
+          <div className="a_box_o">          
             {!datas && <Loader language={language}/> ||
               <div className="a_chats_li_box">
                 {datas && datas.length === 0 && <EmptyCard language={language}/> ||
