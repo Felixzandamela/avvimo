@@ -187,7 +187,7 @@ const Main = ({props, onChanges}) =>{
     <main className={`a_main ${props.theme}`}>
       <Toast props={error.error} onClear={()=>setError(prevError=>({...prevError,error:{text:null,stack:null,fixed:false}}))}/>
       <nav className="m_nav nav a_container flex_b_c">
-        <div className="left_items padd10-lr">
+        <div className="left_items flex_b_c padd10-lr">
           {!toggle.searchField && <div className="logo m5-lr flex_b_c">
               
           <div className="m5-l">Avvimo-chat</div>
