@@ -24,10 +24,12 @@ const SupportChat =({language})=>{
             newChat.owner = snapUser.val();
             lengthDatas.push(1);
             if(newChat.data){
+              const {time} = newChat.data[newChat.data.length - 1];
+              newChat.lastUpdate = time;
               fetchedDatas.push(newChat);
             }
             if(snapChat.numChildren() === lengthDatas.length){
-              setItems(fetchedDatas);
+              setItems(fetchedDatas.sort(sortByDays));
             }
           });
         });
@@ -60,13 +62,22 @@ const SupportChat =({language})=>{
   useEffect(()=>{
     const noChatStarted = currentChat;
     setStates(preState=>({...preState,noChatStarted:noChatStarted}));
-    return ()=>{setStates({});}
   },[currentChat]);
   
   const handleChange = (event)=>{
     const {name,value} = event.target;
     setStates(preState=>({...preState,[name]:value || ""}));
   }
+  
+  function sortByDays(a,b) {
+    if (formatDate(a.lastUpdate).secondsLength < formatDate(b.lastUpdate).secondsLength)
+     return -1;
+    if (formatDate(a.lastUpdate).secondsLength  > formatDate(b.lastUpdate).secondsLength)
+      return 1;
+    return 0;
+  }// sort datas by days length;
+
+
   return(
     <section className="a_sec">
       <div className="sec_chat flex_b">
@@ -79,7 +90,7 @@ const SupportChat =({language})=>{
                 </svg>
               </div>
               <div className="flex_e_c a_search_card_b a_container">
-                <input value={states.search} name="search" onChange={handleChange} placeholder={texts.searchChat[language]} type="text"/>
+                <input value={states.search || ""} name="search" onChange={handleChange} placeholder={texts.searchChat[language]} type="text"/>
                 {!states.search && <i className="bi bi-search"> </i> || 
                   <svg onClick={()=>setStates(preState=>({...preState,search:""}))}  className="" fill="currentColor" opacity="1.0" baseProfile="full" width="24" height="24" viewBox="0 0 24.00 24.00">
                     <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/>
