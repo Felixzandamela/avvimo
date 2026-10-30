@@ -374,7 +374,7 @@ input::placeholder{color: var(--s-color);}
 }
 .a_chat_roller{
   padding:10px 10px 0 10px;
-  height: calc(100vh - 60px);
+  height: calc(100vh - 160px);
   overflow: hidden;
   overflow-y: auto;
   width: 100%;

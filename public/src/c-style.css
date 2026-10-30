@@ -247,8 +247,10 @@ input::placeholder{color: var(--s-color);}
 
  /*chat list and chat styele*/
 .sec_chat{
+  top: 50px;
+  height:calc(100vh - 50px);
+  overflow: auto;
   width: 100%;
-  height: calc(100vh - 50px);
 }
 .a_width_40,.a_width_60{
   width: 100%;
